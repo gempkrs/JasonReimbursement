@@ -19,7 +19,7 @@ public class XUnitEmployeeModel {
      * Tests if we successfully added an employee object to an empty list of 
      * employees. Simulates expected input from the user and expected logic from
      * the business layer.
-     * Passes if an employee is added to the list is constructed with ID of 1.
+     * Passes if an employee to be added to the list is constructed with ID of 1.
      */
     [Fact]
     public void CreateEmployeeFromEmptyList() {
