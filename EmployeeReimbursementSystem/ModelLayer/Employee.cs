@@ -12,6 +12,19 @@ using System.Threading.Tasks;
 namespace ModelLayer;
 
 public class Employee {
+    // Primary key
+    public int id;
+    public string email;
+    public string password;
 
-        
+    // 0 is default. 1 is manager.
+    public int role;
+
+    // Constructor for a normal employee
+    public Employee(int id, string email, string password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = 0;
+    }
 }
