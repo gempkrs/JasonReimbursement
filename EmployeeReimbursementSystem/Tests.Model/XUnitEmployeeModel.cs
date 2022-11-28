@@ -40,8 +40,8 @@ public class XUnitEmployeeModel {
         // Assert
         Assert.Equal(1, dbEmployee[0].id);
         Assert.Equal(0, dbEmployee[0].roleID);
-        Assert.Equal(newEmployee.email, dbEmployee[0].email);
-        Assert.Equal(newEmployee.password, dbEmployee[0].password);    
+        Assert.Equal(email, dbEmployee[0].email);
+        Assert.Equal(password, dbEmployee[0].password);    
     }
 
     /*
@@ -66,8 +66,8 @@ public class XUnitEmployeeModel {
 
         //Assert
         Assert.Equal(1, dbEmployee[0].id);
-        Assert.Equal(newEmployee.roleID, dbEmployee[0].roleID);
-        Assert.Equal(newEmployee.email, dbEmployee[0].email);
-        Assert.Equal(newEmployee.password, dbEmployee[0].password);
+        Assert.Equal(roleID, dbEmployee[0].roleID);
+        Assert.Equal(email, dbEmployee[0].email);
+        Assert.Equal(password, dbEmployee[0].password);
     }
 }
