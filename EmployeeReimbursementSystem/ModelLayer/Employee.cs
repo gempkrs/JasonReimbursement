@@ -18,13 +18,21 @@ public class Employee {
     public string password;
 
     // 0 is default. 1 is manager.
-    public int role;
+    public int roleID;
 
     // Constructor for a normal employee
     public Employee(int id, string email, string password) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.role = 0;
+        this.roleID = 0;
+    }
+
+    // Constructor intended for an employee with the manager role
+    public Employee(int id, string email, string password, int roleID) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.roleID = roleID;
     }
 }
