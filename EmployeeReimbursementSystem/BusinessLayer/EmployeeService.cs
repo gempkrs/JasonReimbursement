@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-//Import our model
+//Import our necessary layers
 using ModelLayer;
 // using RepositoryLayer;
 
@@ -26,22 +26,24 @@ public class EmployeeService : IEmployeeService {
         // Need to get a list of employees from the repository layer
         // Until then, use this list. When we use SQL, simply check
         // and then do an insert query. No need to get list.
-        List<Employee> dbEmployee = new List<Employee>(); // TMP
-        int id = dbEmployee.Count() + 1; // TMP: query count of db 
-        //bool result = true;
+        List<Employee> dbEmployee = new List<Employee>(); //TMP 
+        int id = dbEmployee.Count() + 1; //query count of db 
 
-        Employee newEmployee = new Employee(id, email, password);        
         // Validation
-        // if(email.Length == 0 || password.Length == 0) result = false;
-        // foreach(Employee entry in dbEmployee) {
-        //     if((entry.email).Equals(email))
-        //         result = false;
-        // }
+        if(email.Length < 5 || password.Length < 5) 
+            return null!;
+        foreach(Employee entry in dbEmployee) {
+            if((entry.email).Equals(email))
+                return null!;
+        }
 
-        //dbEmployee.Add(new Employee(id, email, password));
-        // PostToDatabase(dbEmployee)... add list, later this will be
-        // an insert query to insert an employee object
-        //return result;
+        // Create new employee object
+        Employee newEmployee = new Employee(id, email, password);
+        
+        // later change this to an insert query to update db
+        dbEmployee.Add(newEmployee);
+        // _ier.PostEmployees(dbEmployee); 
+        
         return newEmployee;
     }
 }
