@@ -19,8 +19,8 @@ public class EmployeeController : ControllerBase {
     public EmployeeController(IEmployeeService iemps) => this._iemps = iemps;
         
     [HttpPost("AddEmployee")]
-    public ActionResult<bool> RegisterEmployee(string email, string password) {
-        bool employeeRegistered = _iemps.RegisterEmployee(email, password);
-        return employeeRegistered;
+    public ActionResult<Employee> RegisterEmployee(string email, string password) {
+        Employee newEmployee = _iemps.RegisterEmployee(email, password);
+        return Created("path/to/db", newEmployee);
     }
 }
