@@ -1,3 +1,4 @@
+using BusinessLayer;
 namespace ApiLayer;
 
 public class Program
@@ -12,6 +13,9 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        // Adding our scoped services
+        builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
         var app = builder.Build();
 

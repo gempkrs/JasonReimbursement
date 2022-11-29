@@ -14,13 +14,13 @@ namespace ApiLayer.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class EmployeeController : ControllerBase {
-    // Dependency Injection
-    private readonly IEmployeeService _iemps;
-    public EmployeeController(IEmployeeService iemps) => this._iemps = iemps;
+    // Dependency Injection for Employee Service class
+    private readonly IEmployeeService _ies;
+    public EmployeeController(IEmployeeService ies) => this._ies = ies;
         
-    [HttpPost("AddEmployee")]
-    public ActionResult<bool> RegisterEmployee(string email, string password) {
-        bool employeeRegistered = _iemps.RegisterEmployee(email, password);
-        return employeeRegistered;
+    [HttpPost("RegisterEmployee")]
+    public ActionResult<Employee> RegisterEmployee(string email, string password) {
+        Employee newEmployee = _ies.RegisterEmployee(email, password);
+        return Created("path/to/db", newEmployee);
     }
 }

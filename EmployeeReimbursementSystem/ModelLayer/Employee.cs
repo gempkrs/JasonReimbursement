@@ -13,12 +13,12 @@ namespace ModelLayer;
 
 public class Employee {
     // Primary key
-    public int id;
-    public string email;
-    public string password;
+    public int id{get;}
+    public string email{get; set;} 
+    public string password{get; set;}
 
     // 0 is default. 1 is manager.
-    public int roleID;
+    public int roleID{get; set;}
 
     // Constructor for a normal employee
     public Employee(int id, string email, string password) {
