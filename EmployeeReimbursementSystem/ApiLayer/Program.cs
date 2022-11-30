@@ -1,4 +1,11 @@
+/*
+ *
+ */
+
+// Importing necessary layers
 using BusinessLayer;
+using RepositoryLayer;
+
 namespace ApiLayer;
 
 public class Program
@@ -16,6 +23,8 @@ public class Program
 
         // Adding our scoped services
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
 
         var app = builder.Build();
 
