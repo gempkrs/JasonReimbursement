@@ -14,7 +14,7 @@ namespace RepositoryLayer
 {
     public interface IEmployeeRepository {
         List<Employee> GetEmployees();
-        //void PostEmployees(List<Employee> employeeDB);
+        void PostEmployees(List<Employee> employeeDB);
     }
 
     public class EmployeeRepository : IEmployeeRepository
@@ -25,6 +25,11 @@ namespace RepositoryLayer
             } else {
                 return new List<Employee>();
             }
+        }
+
+        public void PostEmployees(List<Employee> employeeDb) {
+            string serializedDb = JsonSerializer.Serialize(employeeDb);
+            File.WriteAllText("EmployeeDatabase.json", serializedDb);
         }
     }
 }

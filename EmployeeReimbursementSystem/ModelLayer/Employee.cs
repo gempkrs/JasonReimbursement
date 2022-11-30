@@ -25,7 +25,7 @@ public class Employee {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.roleID = 0;
+        this.roleID = 90;
     }
 
     // Constructor intended for an employee with the manager role
@@ -35,4 +35,6 @@ public class Employee {
         this.password = password;
         this.roleID = roleID;
     }
+
+    public Employee() {}
 }

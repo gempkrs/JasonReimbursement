@@ -46,7 +46,7 @@ public class EmployeeService : IEmployeeService {
         
         // later change this to an insert query to update db
         dbEmployee.Add(newEmployee);
-        // _ier.PostEmployees(dbEmployee); 
+        _ier.PostEmployees(dbEmployee); 
         
         return newEmployee;
     }
