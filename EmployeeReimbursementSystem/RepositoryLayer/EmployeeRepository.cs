@@ -1,5 +1,10 @@
-/*
- *
+/* JASON TEJADA    PROJECT 1 REPOSITORY LAYER CLASS    REVATURE
+ * Desc:
+ *          This class contains functions to interact with our database.
+ *          GetEmployees returns a deserialized json employee database as a list
+ *          of employees. PostEmployees serializes a list of employees into
+ *          a json employee database. We will work with the list in the
+ *          service class.
  */
 using System;
 using System.Collections.Generic;
