@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 //Import our necessary layers
 using ModelLayer;
-// using RepositoryLayer;
+using RepositoryLayer;
 
 namespace BusinessLayer;
 
@@ -21,12 +21,13 @@ public interface IEmployeeService {
 }
 
 public class EmployeeService : IEmployeeService {
+
+    private readonly IEmployeeRepository _ier;
+    public EmployeeService(IEmployeeRepository ier) => this._ier = ier;
+
     public Employee RegisterEmployee(string email, string password) {
-        // TODO
-        // Need to get a list of employees from the repository layer
-        // Until then, use this list. When we use SQL, simply check
-        // and then do an insert query. No need to get list.
-        List<Employee> dbEmployee = new List<Employee>(); //TMP 
+        // Once we use sql, will only need to do insert query in repo
+        List<Employee> dbEmployee = _ier.GetEmployees(); 
         int id = dbEmployee.Count() + 1; //query count of db 
 
         // Validation
@@ -42,7 +43,7 @@ public class EmployeeService : IEmployeeService {
         
         // later change this to an insert query to update db
         dbEmployee.Add(newEmployee);
-        // _ier.PostEmployees(dbEmployee); 
+        _ier.PostEmployees(dbEmployee); 
         
         return newEmployee;
     }
