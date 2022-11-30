@@ -25,16 +25,12 @@ public class XUnitEmployeeService {
     [InlineData("failtest2@email.com", "")] // Fail
     [InlineData("", "123Fail")] // Fail
     [InlineData("", "")] // Fail 
-    /* TODO: complete the test, first need to complete the database...
-     * Until then, we will fail the second inline data expression.
-     * because there is no other employee to compare with.
-     */
     public void RegisterValidEmployeeToDatabase(string email, string password) {
         // Arrange
-        List<Employee> dbEmployee = new List<Employee>();
+        IEmployeeRepository ier = new EmployeeRepository();
+        List<Employee> dbEmployee = ier.GetEmployees();
         dbEmployee.Add(new Employee(1, "test@email.com", "123456"));
-        //int id = dbEmployee.Count();
-        IEmployeeService _ies = new EmployeeService(new EmployeeRepository());
+        IEmployeeService _ies = new EmployeeService(ier);
 
         // Act
         Employee newEmployee = _ies.RegisterEmployee(email, password);
