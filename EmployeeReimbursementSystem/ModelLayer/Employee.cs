@@ -13,7 +13,7 @@ namespace ModelLayer;
 
 public class Employee {
     // Primary key
-    public int id{get;}
+    public int id{get; set;}
     public string email{get; set;} 
     public string password{get; set;}
 
