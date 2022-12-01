@@ -18,9 +18,11 @@ namespace BusinessLayer;
 // Interface to be used for dependency injection in the api layer
 public interface IEmployeeService {
     public Employee RegisterEmployee(string email, string password);
+    public Employee RegisterEmployee(string email, string password, int roleid);
     public Employee LoginEmployee(string email, string password);
 }
 
+// TODO: Make user/ticket validation it's own class(es) & use it when validation is necessary
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
@@ -31,7 +33,7 @@ public class EmployeeService : IEmployeeService {
         List<Employee> dbEmployee = _ier.GetEmployees(); 
         int id = dbEmployee.Count() + 1; //query count of db 
 
-        // Validation
+        // TODO Validation
         if(email.Length < 5 || password.Length < 5) 
             return null!;
         foreach(Employee entry in dbEmployee) {
@@ -49,9 +51,31 @@ public class EmployeeService : IEmployeeService {
         return newEmployee;
     }
 
+    // Overloaded method for registering a manager/employee with a role
+    public Employee RegisterEmployee(string email, string password, int roleid) {
+        List<Employee> dbEmployee = _ier.GetEmployees(); 
+        int id = dbEmployee.Count() + 1;
+
+        // TODO Validation
+        if(email.Length < 5 || password.Length < 5 || (0 > roleid || roleid > 1)) 
+            return null!;
+        foreach(Employee entry in dbEmployee) {
+            if((entry.email).Equals(email))
+                return null!;
+        }
+
+        Employee newEmployee = new Employee(id, email, password, roleid);
+        
+        dbEmployee.Add(newEmployee);
+        _ier.PostEmployees(dbEmployee); 
+
+        return newEmployee;
+    }
+
     public Employee LoginEmployee(string email, string password) {
         List<Employee> dbEmployees = _ier.GetEmployees(); 
 
+        // TODO Validation
         foreach(Employee entry in dbEmployees) {
             if((entry.email).Equals(email) && (entry.password).Equals(password)) {
                 return entry;
