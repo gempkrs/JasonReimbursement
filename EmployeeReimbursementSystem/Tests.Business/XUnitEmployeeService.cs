@@ -19,6 +19,7 @@ using RepositoryLayer;
 
 namespace Tests.Business;
 public class XUnitEmployeeService {
+    // Employee Registration Test
     [Theory]
     [InlineData("passtest@email.com", "123Pass")]
     [InlineData("test@email.com", "123Fail")]
@@ -46,7 +47,30 @@ public class XUnitEmployeeService {
                 Assert.True(newEmployee is null);
         }
     }
+    // Employee Registration Test
+    // Employee With Role Registration Test
+    [Theory]
+    [InlineData("NewManager@email.com", "123Pass", 1)]
+    [InlineData("NewEmployee@email.com", "123Pass", 0)]
+    [InlineData("NewEmployee@email.com", "123Pass", 2)]
+    [InlineData("NewEmployee@email.com", "123Pass", -1)]
+    public void RegisterValidSpecialEmployeeToDatabase(string email, string password, int roleid) {
+        IEmployeeRepository ier = new EmployeeRepository();
+        List<Employee> db = ier.GetEmployees();
+        IEmployeeService _ies = new EmployeeService(ier);
 
+        Employee newManager = _ies.RegisterEmployee(email, password, roleid);
+
+        if(email.Length < 1 || password.Length < 1 || (0 > roleid || roleid > 1))
+            Assert.True(newManager is null);
+        foreach(Employee e in db) {
+            if((e.email).Equals(email)) 
+                Assert.True(newManager is null);
+        }
+    }
+    // Employee With Role Registration Test
+
+    // Login Test
     [Theory]
     // Can't pass test for valid email, even though LoginEmployee works as expected...
     [InlineData("test@email.com", "123Pass")] 
@@ -81,4 +105,5 @@ public class XUnitEmployeeService {
             Assert.True(validEmployee is not null);
         }
     }
+    // Login Test
 }

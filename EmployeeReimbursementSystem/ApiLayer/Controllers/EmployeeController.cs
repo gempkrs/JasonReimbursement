@@ -24,6 +24,12 @@ public class EmployeeController : ControllerBase {
         return Created("path/to/db", newEmployee);
     }
 
+    [HttpPost("RegisterManager")]
+    public ActionResult<Employee> RegisterEmployee(string email, string password, int roleid) {
+        Employee newEmployee = _ies.RegisterEmployee(email, password, roleid);
+        return Created("path/to/db", newEmployee);
+    }
+
     [HttpGet("LoginEmployee")]
     public ActionResult<Employee> LoginEmployee(string email, string password) {
         Employee employee = _ies.LoginEmployee(email, password);
