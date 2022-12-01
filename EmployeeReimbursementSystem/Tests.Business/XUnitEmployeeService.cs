@@ -48,7 +48,8 @@ public class XUnitEmployeeService {
     }
 
     [Theory]
-    [InlineData("test@email.com", "123Pass")]
+    // Can't pass test for valid email, even though LoginEmployee works as expected...
+    [InlineData("test@email.com", "123Pass")] 
     [InlineData("test@email.com", "123Fail")]
     [InlineData("FailTest@email.com", "123Pass")]
     [InlineData("", "")]
@@ -57,9 +58,9 @@ public class XUnitEmployeeService {
     public void LoginEmployeeWithValidCredentials(string email, string password) {
         // Arrange
         IEmployeeRepository ier = new EmployeeRepository();
-        // List<Employee> db = ier.GetEmployees();
+        List<Employee> db = ier.GetEmployees();
         IEmployeeService _ies = new EmployeeService(ier);
-        List<Employee> db = new List<Employee>();
+        //List<Employee> db = ier.GetEmployees();
         db.Add(new Employee(1, "test@email.com", "123Pass"));
 
         //Act
@@ -77,7 +78,7 @@ public class XUnitEmployeeService {
         if(!valid) {
             Assert.True(validEmployee is null);
         } else {
-            Assert.False(validEmployee is null);
+            Assert.True(validEmployee is not null);
         }
     }
 }

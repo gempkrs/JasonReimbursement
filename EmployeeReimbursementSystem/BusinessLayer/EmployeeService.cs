@@ -50,11 +50,14 @@ public class EmployeeService : IEmployeeService {
     }
 
     public Employee LoginEmployee(string email, string password) {
-        List<Employee> dbEmployee = _ier.GetEmployees(); 
-        int id = dbEmployee.Count() + 1;
-        
-        Employee validEmployee = new Employee(id, email, password);
+        List<Employee> dbEmployees = _ier.GetEmployees(); 
 
-        return validEmployee;
+        foreach(Employee entry in dbEmployees) {
+            if((entry.email).Equals(email) && (entry.password).Equals(password)) {
+                return entry;
+            }
+        }
+        
+        return null!;
     }
 }
