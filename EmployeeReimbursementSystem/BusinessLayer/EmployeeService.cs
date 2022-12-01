@@ -18,6 +18,7 @@ namespace BusinessLayer;
 // Interface to be used for dependency injection in the api layer
 public interface IEmployeeService {
     public Employee RegisterEmployee(string email, string password);
+    public Employee LoginEmployee(string email, string password);
 }
 
 public class EmployeeService : IEmployeeService {
@@ -46,5 +47,17 @@ public class EmployeeService : IEmployeeService {
         _ier.PostEmployees(dbEmployee); 
         
         return newEmployee;
+    }
+
+    public Employee LoginEmployee(string email, string password) {
+        List<Employee> dbEmployees = _ier.GetEmployees(); 
+
+        foreach(Employee entry in dbEmployees) {
+            if((entry.email).Equals(email) && (entry.password).Equals(password)) {
+                return entry;
+            }
+        }
+        
+        return null!;
     }
 }
