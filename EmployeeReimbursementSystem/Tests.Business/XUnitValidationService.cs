@@ -11,25 +11,44 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-using ModelLayer;
 using BusinessLayer;
+using System.Net.Mail;
 
 namespace Tests.Business
 {
     public class XUnitValidationService
     {
         [Theory]
-        [InlineData("testNormal@email.com")] // False
+        [InlineData("pass@email.com")] // True
         [InlineData("UniqueEmail@email.com")] // True
-        public void ValidEmail(string email) {
+        [InlineData("testemail.com")]  // False, wrong format
+        [InlineData("test")]           // False, wrong format
+        [InlineData("test@email.com")] // False, exists
+        public void ValidateEmail(string email) {
+            // Arrange
             IValidationService _ivs = new ValidationService();
+            
+            // Act
+            bool validEmail = _ivs.ValidEmail(email);
+            bool check = MailAddress.TryCreate(email, out MailAddress ?result);
+            
+            // Assert
+            if(check == true)
+                Assert.True(validEmail);
+            else
+                Assert.False(validEmail);
+            
+            /* THIS PART WILL MORE OR LESS BE TAKEN CARE OF BY OUR REPO LAYER
             List<Employee> db = new List<Employee>();
             Employee existingEmployee = new Employee(0, "testNormal@email.com", "123Pass");
             db.Add(existingEmployee);
-            if(existingEmployee.email.Equals(email))
-                Assert.False(_ivs.ValidEmail(email, db));
-            else
-                Assert.True(_ivs.ValidEmail(email, db));
+            foreach(Employee e in db) {
+                if(e.email.Equals(email))
+                    Assert.False(_ivs.ValidEmail(email, db));
+                else
+                    Assert.True(_ivs.ValidEmail(email, db));
+            }
+            */
         }
     }
 }
