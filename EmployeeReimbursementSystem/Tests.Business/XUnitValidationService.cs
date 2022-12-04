@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Xunit;
 
 using BusinessLayer;
+using RepositoryLayer;
+using ModelLayer;
 using System.Net.Mail;
 
 namespace Tests.Business
@@ -23,10 +25,9 @@ namespace Tests.Business
         [InlineData("UniqueEmail@email.com")] // True
         [InlineData("testemail.com")]  // False, wrong format
         [InlineData("test")]           // False, wrong format
-        [InlineData("test@email.com")] // False, exists
-        public void ValidateEmail(string email) {
+        public void ValidateEmailFormat(string email) {
             // Arrange
-            IValidationService _ivs = new ValidationService();
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
             
             // Act
             bool validEmail = _ivs.ValidEmail(email);
@@ -49,6 +50,25 @@ namespace Tests.Business
                     Assert.True(_ivs.ValidEmail(email, db));
             }
             */
+        }
+
+        [Theory]
+        [InlineData("test@email.com")] // False, exists
+        public void UnqiueEmailValidation(string email) {
+            // Arrange
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+            bool emailExists = false;
+            List<string> existingTestEmails = new List<string> {
+                "test@email.com",
+            };
+
+            // Act
+            foreach(string entry in existingTestEmails) {
+                if(entry.Equals(email)) emailExists = true;
+            }
+
+            // Assert, Email already exists
+            if(emailExists) Assert.False(_ivs.ValidEmail(email));
         }
     }
 }
