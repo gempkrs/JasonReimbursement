@@ -62,7 +62,7 @@ public class EmployeeService : IEmployeeService {
         int id = dbEmployee.Count() + 1; // TMP
 
         // TODO Validation
-        if(!_ivs.ValidEmail(email) || password.Length < 5 || (0 > roleid || roleid > 1)) 
+        if(!_ivs.ValidEmail(email) || password.Length < 5 || !_ivs.ValidRole(roleid)) 
             return null!;
         // foreach(Employee entry in dbEmployee) {
         //     if((entry.email).Equals(email))

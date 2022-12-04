@@ -62,6 +62,18 @@ namespace Tests.Business
         }
 
         [Theory]
+        [InlineData("123Pass")] // Valid
+        [InlineData("123pass")] // Valid
+        [InlineData("nope")] // Invalid
+        [InlineData("$NOtValid")] // Invalid
+        public void PasswordValidation(string password) {
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+
+            if(password.Length < 6) Assert.False(_ivs.ValidPassword(password));
+            else Assert.True(_ivs.ValidPassword(password));
+        }
+
+        [Theory]
         [InlineData(0)] // True
         [InlineData(1)] // True
         [InlineData(2)] // False

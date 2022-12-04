@@ -17,6 +17,7 @@ namespace BusinessLayer
 {
     public interface IValidationService {
         public bool ValidEmail(string email);
+        public bool ValidPassword(string pass);
         public bool ValidRole(int roleId);
     }
 
@@ -38,6 +39,7 @@ namespace BusinessLayer
 
             return (validInput && uniqueEmail);
         }
+        public bool ValidPassword(string pass) => Regex.Match(pass, @"^([0-9a-zA-Z]{6,})$").Success;
         public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
     }
 }
