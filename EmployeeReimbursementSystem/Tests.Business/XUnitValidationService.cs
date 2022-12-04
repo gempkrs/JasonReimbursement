@@ -25,6 +25,7 @@ namespace Tests.Business
         [InlineData("UniqueEmail@email.com")] // True
         [InlineData("testemail.com")]  // False, wrong format
         [InlineData("test")]           // False, wrong format
+        [InlineData("newTestEmail@email")] // False, wrong format
         public void ValidateEmailFormat(string email) {
             // Arrange
             IValidationService _ivs = new ValidationService(new EmployeeRepository());
@@ -53,7 +54,8 @@ namespace Tests.Business
         }
 
         [Theory]
-        [InlineData("test@email.com")] // False, exists
+        [InlineData("test@email.com")] // Exists
+        [InlineData("DoesntExist@email.com")] // Unique
         public void UnqiueEmailValidation(string email) {
             // Arrange
             IValidationService _ivs = new ValidationService(new EmployeeRepository());

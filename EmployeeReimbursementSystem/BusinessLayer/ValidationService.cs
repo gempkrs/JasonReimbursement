@@ -11,7 +11,7 @@ using ModelLayer;
 using RepositoryLayer;
 
 // Library used in email validation... Easier than using a regex
-using System.Net.Mail;
+using System.Text.RegularExpressions;
 
 namespace BusinessLayer
 {
@@ -25,9 +25,10 @@ namespace BusinessLayer
 
         // Validate input format and ensure the email exists.
         public bool ValidEmail(string email) {
-            bool validInput = MailAddress.TryCreate(email, out MailAddress ?result);
+            string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
+            bool validInput = Regex.Match(email, regex).Success;
+            // Should start as false, if query returns no records we have unique email.
             bool uniqueEmail = true;
-            /* IF QUERY RETURNS NO RECORDS, WE HAVE A UNIQUE EMAIL */
             
             // TMP
             foreach(Employee e in _ier.GetEmployees()) {
