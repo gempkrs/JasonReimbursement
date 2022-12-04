@@ -39,18 +39,6 @@ namespace Tests.Business
                 Assert.True(validEmail);
             else
                 Assert.False(validEmail);
-            
-            /* THIS PART WILL MORE OR LESS BE TAKEN CARE OF BY OUR REPO LAYER
-            List<Employee> db = new List<Employee>();
-            Employee existingEmployee = new Employee(0, "testNormal@email.com", "123Pass");
-            db.Add(existingEmployee);
-            foreach(Employee e in db) {
-                if(e.email.Equals(email))
-                    Assert.False(_ivs.ValidEmail(email, db));
-                else
-                    Assert.True(_ivs.ValidEmail(email, db));
-            }
-            */
         }
 
         [Theory]
@@ -71,6 +59,21 @@ namespace Tests.Business
 
             // Assert, Email already exists
             if(emailExists) Assert.False(_ivs.ValidEmail(email));
+        }
+
+        [Theory]
+        [InlineData(0)] // True
+        [InlineData(1)] // True
+        [InlineData(2)] // False
+        [InlineData(-1)] // False
+        public void RoleValidation(int roleId) {
+            // Arrange
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+
+            // Assert
+            if(_ivs.ValidRole(roleId)) 
+                Assert.True(roleId == 0 || roleId == 1);
+            else Assert.False(_ivs.ValidRole(roleId));
         }
     }
 }

@@ -1,7 +1,8 @@
 /* JASON TEJADA    PROJECT 1 BUSINESS LAYER CLASS    REVATURE 
  * Desc:
  *          This class defines the business logic for our employee
- *          requirements for the ERS.
+ *          requirements for the ERS. Implements main functionality
+ *          for employees.
  */
 
 using System;

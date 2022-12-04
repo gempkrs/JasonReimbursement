@@ -17,6 +17,7 @@ namespace BusinessLayer
 {
     public interface IValidationService {
         public bool ValidEmail(string email);
+        public bool ValidRole(int roleId);
     }
 
     public class ValidationService : IValidationService {
@@ -37,5 +38,6 @@ namespace BusinessLayer
 
             return (validInput && uniqueEmail);
         }
+        public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
     }
 }
