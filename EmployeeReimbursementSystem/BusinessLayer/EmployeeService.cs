@@ -26,7 +26,11 @@ public interface IEmployeeService {
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
-    public EmployeeService(IEmployeeRepository ier) => this._ier = ier;
+    private IValidationService _ivs;
+    public EmployeeService(IEmployeeRepository ier) { 
+        this._ier = ier;
+        this._ivs = new ValidationService(_ier);
+    }
 
     public Employee RegisterEmployee(string email, string password) {
         // Once we use sql, will only need to do insert query in repo
@@ -34,12 +38,12 @@ public class EmployeeService : IEmployeeService {
         int id = dbEmployee.Count() + 1; //query count of db 
 
         // TODO Validation
-        if(email.Length < 5 || password.Length < 5) 
+        if(!_ivs.ValidEmail(email) || password.Length < 5) 
             return null!;
-        foreach(Employee entry in dbEmployee) {
-            if((entry.email).Equals(email))
-                return null!;
-        }
+        // foreach(Employee entry in dbEmployee) {
+        //     if((entry.email).Equals(email))
+        //         return null!;
+        // }
 
         // Create new employee object
         Employee newEmployee = new Employee(id, email, password);
@@ -53,16 +57,16 @@ public class EmployeeService : IEmployeeService {
 
     // Overloaded method for registering a manager/employee with a role
     public Employee RegisterEmployee(string email, string password, int roleid) {
-        List<Employee> dbEmployee = _ier.GetEmployees(); 
-        int id = dbEmployee.Count() + 1;
+        List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
+        int id = dbEmployee.Count() + 1; // TMP
 
         // TODO Validation
-        if(email.Length < 5 || password.Length < 5 || (0 > roleid || roleid > 1)) 
+        if(!_ivs.ValidEmail(email) || password.Length < 5 || (0 > roleid || roleid > 1)) 
             return null!;
-        foreach(Employee entry in dbEmployee) {
-            if((entry.email).Equals(email))
-                return null!;
-        }
+        // foreach(Employee entry in dbEmployee) {
+        //     if((entry.email).Equals(email))
+        //         return null!;
+        // }
 
         Employee newEmployee = new Employee(id, email, password, roleid);
         
