@@ -38,13 +38,8 @@ public class EmployeeService : IEmployeeService {
         List<Employee> dbEmployee = _ier.GetEmployees(); 
         int id = dbEmployee.Count() + 1; //query count of db 
 
-        // TODO Validation
-        if(!_ivs.ValidEmail(email) || password.Length < 5) 
+        if(!_ivs.ValidRegistration(email, password)) 
             return null!;
-        // foreach(Employee entry in dbEmployee) {
-        //     if((entry.email).Equals(email))
-        //         return null!;
-        // }
 
         // Create new employee object
         Employee newEmployee = new Employee(id, email, password);
@@ -61,13 +56,8 @@ public class EmployeeService : IEmployeeService {
         List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
         int id = dbEmployee.Count() + 1; // TMP
 
-        // TODO Validation
-        if(!_ivs.ValidEmail(email) || password.Length < 5 || !_ivs.ValidRole(roleid)) 
+        if(!_ivs.ValidRegistration(email, password, roleid)) 
             return null!;
-        // foreach(Employee entry in dbEmployee) {
-        //     if((entry.email).Equals(email))
-        //         return null!;
-        // }
 
         Employee newEmployee = new Employee(id, email, password, roleid);
         
@@ -80,7 +70,7 @@ public class EmployeeService : IEmployeeService {
     public Employee LoginEmployee(string email, string password) {
         List<Employee> dbEmployees = _ier.GetEmployees(); 
 
-        // TODO Validation
+        // TODO Validation... in validation service, ensure employee exists & if they do return their id
         foreach(Employee entry in dbEmployees) {
             if((entry.email).Equals(email) && (entry.password).Equals(password)) {
                 return entry;
