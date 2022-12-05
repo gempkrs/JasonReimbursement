@@ -25,8 +25,9 @@ public class Program
 
         // Adding our scoped services
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+        builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
+        builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
         var app = builder.Build();
 

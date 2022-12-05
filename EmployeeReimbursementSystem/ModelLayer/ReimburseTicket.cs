@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 namespace ModelLayer;
 
 public class ReimburseTicket {
-    public int id;
-    public int employeeID;
-    public string reason;
-    public int amount;
-    public string description;
+    public int id{get; set;}
+    public int employeeID{get; set;}
+    public string reason{get; set;}
+    public int amount{get; set;}
+    public string description{get; set;}
 
     // 0 is pending, 1 is approved, 2 is rejected
-    public int status;
+    public int status{get; set;}
 
     // Constructor to be used when an employee creates a ticket
     public ReimburseTicket(int id, int employeeID, string reason, int amount, string description) {
@@ -30,4 +30,6 @@ public class ReimburseTicket {
         this.description = description;
         this.status = 0;
     }
+
+    public ReimburseTicket() {}
 }
