@@ -21,7 +21,8 @@ namespace BusinessLayer
         public bool ValidRole(int roleId);
         public bool ValidRegistration(string email, string pass);
         public bool ValidRegistration(string email, string pass, int roleId);
-        
+        public bool isEmployee(int id);
+        // TODO public bool isManager(int id);
     }
 
     public class EmployeeValidationService : IEmployeeValidationService {
@@ -49,6 +50,11 @@ namespace BusinessLayer
         public bool ValidPassword(string pass) => Regex.Match(pass, @"^([0-9a-zA-Z]{6,})$").Success;
         public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
         #endregion
-    
+        public bool isEmployee(int id) {
+            // TODO TMP; if the query returns 0 records, employee doesn't exist
+            foreach(Employee entry in _ier.GetEmployees())
+                if(entry.id == id) return true;
+            return false;
+        }
     }
 }
