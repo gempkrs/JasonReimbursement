@@ -22,7 +22,7 @@ namespace BusinessLayer
         public bool ValidRegistration(string email, string pass);
         public bool ValidRegistration(string email, string pass, int roleId);
         public bool isEmployee(int id);
-        // TODO public bool isManager(int id);
+        public bool isManager(int id);
     }
 
     public class EmployeeValidationService : IEmployeeValidationService {
@@ -54,6 +54,13 @@ namespace BusinessLayer
             // TODO TMP; if the query returns 0 records, employee doesn't exist
             foreach(Employee entry in _ier.GetEmployees())
                 if(entry.id == id) return true;
+            return false;
+        }
+
+        public bool isManager(int id) {
+            // TODO TMP; if the query returns 0 records, employee doesn't exist or has no permissions
+            foreach(Employee entry in _ier.GetEmployees())
+                if(entry.id == id && entry.roleID == 1) return true;
             return false;
         }
     }

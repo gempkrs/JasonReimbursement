@@ -14,6 +14,7 @@ namespace BusinessLayer;
 
 public interface ITicketService {
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
+    public List<ReimburseTicket> GetPendingTickets(int empId);
 }
 
 public class TicketService : ITicketService {
@@ -41,5 +42,18 @@ public class TicketService : ITicketService {
         _itr.PostTickets(ticketDb);
 
         return newTicket;
+    }
+
+    public List<ReimburseTicket> GetPendingTickets(int empId) {
+        // TODO, TMP; until sql works... in db, first check if employee is a manager; then query for tickets that are pending
+        if(!_ievs.isManager(empId)) return null!;
+        
+        // tmp... with sql we will get list from repo layer(?)
+        List<ReimburseTicket> pendingTickets = new List<ReimburseTicket>();
+        foreach(ReimburseTicket ticket in _itr.GetTickets()) {
+            if(ticket.status == 0) pendingTickets.Add(ticket);
+        }
+
+        return pendingTickets;
     }
 }

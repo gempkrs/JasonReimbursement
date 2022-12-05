@@ -26,5 +26,11 @@ namespace ApiLayer.Controllers
             ReimburseTicket ticket = _its.AddTicket(empId, reason, amount, description);
             return Created("path/", ticket);
         }
+
+        [HttpGet("PendingTickets")]
+        public ActionResult<List<ReimburseTicket>> PendingTickets(int empId) {
+            List<ReimburseTicket> pendingTickets = _its.GetPendingTickets(empId);
+            return Created("path/", pendingTickets);
+        }
     }
 }
