@@ -17,6 +17,7 @@ public interface ITicketService {
     public List<ReimburseTicket> GetPendingTickets(int empId);
     public ReimburseTicket ApproveTicket(int empId, int tickId);
     public ReimburseTicket DenyTicket(int empId, int ticketId);
+    public List<ReimburseTicket> GetEmployeeTickets(int empId);
 }
 
 public class TicketService : ITicketService {
@@ -91,5 +92,18 @@ public class TicketService : ITicketService {
         }
 
         return null!;
+    }
+
+    public List<ReimburseTicket> GetEmployeeTickets(int empId) {
+        // TODO, Tmp; until sql works... in db, check if employee exists and if they do, use their id to query their tickets.
+        if(!_ievs.isEmployee(empId)) return null!;
+
+        // Tmp, with sql we will do a query using the employee id.
+        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
+        foreach(ReimburseTicket ticket in _itr.GetTickets()) {
+            if(ticket.employeeID == empId) employeeTickets.Add(ticket);
+        }
+        
+        return employeeTickets;
     }
 }

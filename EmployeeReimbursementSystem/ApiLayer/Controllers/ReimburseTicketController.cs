@@ -44,5 +44,11 @@ namespace ApiLayer.Controllers
             ReimburseTicket deniedTicket = _its.DenyTicket(empId, ticketId);
             return Created("path/", deniedTicket);
         }
+
+        [HttpGet("EmployeeTickets")]
+        public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId) {
+            List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId);
+            return Created("path/", employeeTickets);
+        }
     }
 }
