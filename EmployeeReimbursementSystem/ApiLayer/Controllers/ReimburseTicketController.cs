@@ -50,5 +50,11 @@ namespace ApiLayer.Controllers
             List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId);
             return Created("path/", employeeTickets);
         }
+
+        [HttpGet("EmployeeTicketsByStatus")]
+        public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId, int status) {
+            List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId, status);
+            return Created("path/", employeeTickets);
+        }
     }
 }
