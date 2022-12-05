@@ -11,25 +11,81 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-using ModelLayer;
 using BusinessLayer;
+using RepositoryLayer;
+using ModelLayer;
+using System.Net.Mail;
 
 namespace Tests.Business
 {
     public class XUnitValidationService
     {
         [Theory]
-        [InlineData("testNormal@email.com")] // False
+        [InlineData("pass@email.com")] // True
         [InlineData("UniqueEmail@email.com")] // True
-        public void ValidEmail(string email) {
-            IValidationService _ivs = new ValidationService();
-            List<Employee> db = new List<Employee>();
-            Employee existingEmployee = new Employee(0, "testNormal@email.com", "123Pass");
-            db.Add(existingEmployee);
-            if(existingEmployee.email.Equals(email))
-                Assert.False(_ivs.ValidEmail(email, db));
+        [InlineData("testemail.com")]  // False, wrong format
+        [InlineData("test")]           // False, wrong format
+        [InlineData("newTestEmail@email")] // False, wrong format
+        public void ValidateEmailFormat(string email) {
+            // Arrange
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+            
+            // Act
+            bool validEmail = _ivs.ValidEmail(email);
+            bool check = MailAddress.TryCreate(email, out MailAddress ?result);
+            
+            // Assert
+            if(check == true)
+                Assert.True(validEmail);
             else
-                Assert.True(_ivs.ValidEmail(email, db));
+                Assert.False(validEmail);
+        }
+
+        [Theory]
+        [InlineData("test@email.com")] // Exists
+        [InlineData("DoesntExist@email.com")] // Unique
+        public void UnqiueEmailValidation(string email) {
+            // Arrange
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+            bool emailExists = false;
+            List<string> existingTestEmails = new List<string> {
+                "test@email.com",
+            };
+
+            // Act
+            foreach(string entry in existingTestEmails) {
+                if(entry.Equals(email)) emailExists = true;
+            }
+
+            // Assert, Email already exists
+            if(emailExists) Assert.False(_ivs.ValidEmail(email));
+        }
+
+        [Theory]
+        [InlineData("123Pass")] // Valid
+        [InlineData("123pass")] // Valid
+        [InlineData("nope")] // Invalid
+        [InlineData("$NOtValid")] // Invalid
+        public void PasswordValidation(string password) {
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+
+            if(password.Length < 6) Assert.False(_ivs.ValidPassword(password));
+            else Assert.True(_ivs.ValidPassword(password));
+        }
+
+        [Theory]
+        [InlineData(0)] // True
+        [InlineData(1)] // True
+        [InlineData(2)] // False
+        [InlineData(-1)] // False
+        public void RoleValidation(int roleId) {
+            // Arrange
+            IValidationService _ivs = new ValidationService(new EmployeeRepository());
+
+            // Assert
+            if(_ivs.ValidRole(roleId)) 
+                Assert.True(roleId == 0 || roleId == 1);
+            else Assert.False(_ivs.ValidRole(roleId));
         }
     }
 }

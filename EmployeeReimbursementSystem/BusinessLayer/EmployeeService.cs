@@ -1,7 +1,8 @@
 /* JASON TEJADA    PROJECT 1 BUSINESS LAYER CLASS    REVATURE 
  * Desc:
  *          This class defines the business logic for our employee
- *          requirements for the ERS.
+ *          requirements for the ERS. Implements main functionality
+ *          for employees.
  */
 
 using System;
@@ -26,20 +27,19 @@ public interface IEmployeeService {
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
-    public EmployeeService(IEmployeeRepository ier) => this._ier = ier;
+    private IValidationService _ivs;
+    public EmployeeService(IEmployeeRepository ier) { 
+        this._ier = ier;
+        this._ivs = new ValidationService(_ier);
+    }
 
     public Employee RegisterEmployee(string email, string password) {
         // Once we use sql, will only need to do insert query in repo
         List<Employee> dbEmployee = _ier.GetEmployees(); 
         int id = dbEmployee.Count() + 1; //query count of db 
 
-        // TODO Validation
-        if(email.Length < 5 || password.Length < 5) 
+        if(!_ivs.ValidRegistration(email, password)) 
             return null!;
-        foreach(Employee entry in dbEmployee) {
-            if((entry.email).Equals(email))
-                return null!;
-        }
 
         // Create new employee object
         Employee newEmployee = new Employee(id, email, password);
@@ -53,16 +53,11 @@ public class EmployeeService : IEmployeeService {
 
     // Overloaded method for registering a manager/employee with a role
     public Employee RegisterEmployee(string email, string password, int roleid) {
-        List<Employee> dbEmployee = _ier.GetEmployees(); 
-        int id = dbEmployee.Count() + 1;
+        List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
+        int id = dbEmployee.Count() + 1; // TMP
 
-        // TODO Validation
-        if(email.Length < 5 || password.Length < 5 || (0 > roleid || roleid > 1)) 
+        if(!_ivs.ValidRegistration(email, password, roleid)) 
             return null!;
-        foreach(Employee entry in dbEmployee) {
-            if((entry.email).Equals(email))
-                return null!;
-        }
 
         Employee newEmployee = new Employee(id, email, password, roleid);
         
@@ -75,7 +70,7 @@ public class EmployeeService : IEmployeeService {
     public Employee LoginEmployee(string email, string password) {
         List<Employee> dbEmployees = _ier.GetEmployees(); 
 
-        // TODO Validation
+        // TODO Validation... validates itself, if we get no records return null from repo layer
         foreach(Employee entry in dbEmployees) {
             if((entry.email).Equals(email) && (entry.password).Equals(password)) {
                 return entry;

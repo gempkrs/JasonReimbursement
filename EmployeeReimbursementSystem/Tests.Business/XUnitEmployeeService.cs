@@ -19,7 +19,7 @@ using RepositoryLayer;
 
 namespace Tests.Business;
 public class XUnitEmployeeService {
-    // Employee Registration Test
+    // Employee Registration Test ... Might be deprecated after the validation tests...
     [Theory]
     [InlineData("passtest@email.com", "123Pass")]
     [InlineData("test@email.com", "123Fail")]
@@ -47,7 +47,7 @@ public class XUnitEmployeeService {
                 Assert.True(newEmployee is null);
         }
     }
-    // Employee Registration Test
+    // Employee Registration Test ... Might be deprecated after the validation tests...
     // Employee With Role Registration Test
     [Theory]
     [InlineData("NewManager@email.com", "123Pass", 1)]
@@ -70,7 +70,7 @@ public class XUnitEmployeeService {
     }
     // Employee With Role Registration Test
 
-    // Login Test
+    // Login Test... Might be deprecated after the validation tests...
     [Theory]
     // Can't pass test for valid email, even though LoginEmployee works as expected...
     [InlineData("test@email.com", "123Pass")] 
