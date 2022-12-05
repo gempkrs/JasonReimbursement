@@ -38,5 +38,11 @@ namespace ApiLayer.Controllers
             ReimburseTicket approvedTicket = _its.ApproveTicket(empId, ticketId);
             return Created("path/", approvedTicket);
         }
+
+        [HttpPut("Deny")]
+        public ActionResult<ReimburseTicket> Deny(int empId, int ticketId) {
+            ReimburseTicket deniedTicket = _its.DenyTicket(empId, ticketId);
+            return Created("path/", deniedTicket);
+        }
     }
 }

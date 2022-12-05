@@ -16,6 +16,7 @@ public interface ITicketService {
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
     public List<ReimburseTicket> GetPendingTickets(int empId);
     public ReimburseTicket ApproveTicket(int empId, int tickId);
+    public ReimburseTicket DenyTicket(int empId, int ticketId);
 }
 
 public class TicketService : ITicketService {
@@ -67,6 +68,23 @@ public class TicketService : ITicketService {
         foreach(ReimburseTicket ticket in ticketDb) {
             if(ticket.id == ticketId && ticket.status == 0) {
                 ticket.status = 1;
+                _itr.PostTickets(ticketDb);
+                return ticket;
+            }
+        }
+
+        return null!;
+    }
+
+    public ReimburseTicket DenyTicket(int empId, int ticketId) {
+        // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
+        if(!_ievs.isManager(empId) || !_itvs.isTicket(ticketId)) return null!;
+
+        //tmp, with sql we will just do update query using ticketId...
+        List<ReimburseTicket> ticketDb = _itr.GetTickets();
+        foreach(ReimburseTicket ticket in ticketDb) {
+            if(ticket.id == ticketId && ticket.status == 0) {
+                ticket.status = 2;
                 _itr.PostTickets(ticketDb);
                 return ticket;
             }
