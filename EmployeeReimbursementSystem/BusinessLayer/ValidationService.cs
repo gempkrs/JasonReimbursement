@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 
 namespace BusinessLayer
 {
-    public interface IValidationService {
+    public interface IEmployeeValidationService {
         public bool ValidEmail(string email);
         public bool ValidPassword(string pass);
         public bool ValidRole(int roleId);
@@ -24,9 +24,9 @@ namespace BusinessLayer
         
     }
 
-    public class ValidationService : IValidationService {
+    public class EmployeeValidationService : IEmployeeValidationService {
         private readonly IEmployeeRepository _ier;
-        public ValidationService(IEmployeeRepository ier) => this._ier = ier;
+        public EmployeeValidationService(IEmployeeRepository ier) => this._ier = ier;
 
         public bool ValidRegistration(string email, string pass) => ValidEmail(email) && ValidPassword(pass);
         public bool ValidRegistration(string email, string pass, int roleId) => ValidEmail(email) && ValidPassword(pass) && ValidRole(roleId);

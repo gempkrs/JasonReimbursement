@@ -27,10 +27,10 @@ public interface IEmployeeService {
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
-    private IValidationService _ivs;
+    private IEmployeeValidationService _ivs;
     public EmployeeService(IEmployeeRepository ier) { 
         this._ier = ier;
-        this._ivs = new ValidationService(_ier);
+        this._ivs = new EmployeeValidationService(_ier);
     }
 
     public Employee RegisterEmployee(string email, string password) {
