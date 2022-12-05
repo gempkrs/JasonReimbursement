@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using ModelLayer;
 using RepositoryLayer;
 
-// Library used in email validation... Easier than using a regex
+// Regex library to enforce password and email constraints
 using System.Text.RegularExpressions;
 
 namespace BusinessLayer
