@@ -70,7 +70,7 @@ public class EmployeeService : IEmployeeService {
     public Employee LoginEmployee(string email, string password) {
         List<Employee> dbEmployees = _ier.GetEmployees(); 
 
-        // TODO Validation... in validation service, ensure employee exists & if they do return their id
+        // TODO Validation... validates itself, if we get no records return null from repo layer
         foreach(Employee entry in dbEmployees) {
             if((entry.email).Equals(email) && (entry.password).Equals(password)) {
                 return entry;
