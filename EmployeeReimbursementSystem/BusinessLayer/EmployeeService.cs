@@ -27,10 +27,10 @@ public interface IEmployeeService {
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
-    private IEmployeeValidationService _ivs;
+    private IEmployeeValidationService _ievs;
     public EmployeeService(IEmployeeRepository ier) { 
         this._ier = ier;
-        this._ivs = new EmployeeValidationService(_ier);
+        this._ievs = new EmployeeValidationService(_ier);
     }
 
     public Employee RegisterEmployee(string email, string password) {
@@ -38,7 +38,7 @@ public class EmployeeService : IEmployeeService {
         List<Employee> dbEmployee = _ier.GetEmployees(); 
         int id = dbEmployee.Count() + 1; //query count of db 
 
-        if(!_ivs.ValidRegistration(email, password)) 
+        if(!_ievs.ValidRegistration(email, password)) 
             return null!;
 
         // Create new employee object
@@ -56,7 +56,7 @@ public class EmployeeService : IEmployeeService {
         List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
         int id = dbEmployee.Count() + 1; // TMP
 
-        if(!_ivs.ValidRegistration(email, password, roleid)) 
+        if(!_ievs.ValidRegistration(email, password, roleid)) 
             return null!;
 
         Employee newEmployee = new Employee(id, email, password, roleid);
