@@ -18,7 +18,7 @@ using System.Net.Mail;
 
 namespace Tests.Business
 {
-    public class XUnitValidationService
+    public class XUnitEmployeeValidationService
     {
         [Theory]
         [InlineData("pass@email.com")] // True
