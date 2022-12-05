@@ -21,6 +21,10 @@ public interface IEmployeeService {
     public Employee RegisterEmployee(string email, string password);
     public Employee RegisterEmployee(string email, string password, int roleid);
     public Employee LoginEmployee(string email, string password);
+    
+    public Employee EditEmployee(int id, string oldPassword, string newPassword);
+    public Employee EditEmployee(int id, string email);
+    public Employee EditEmployee(int id, int roleId);
 }
 
 // TODO: Make user/ticket validation it's own class(es) & use it when validation is necessary
@@ -77,6 +81,53 @@ public class EmployeeService : IEmployeeService {
             }
         }
         
+        return null!;
+    }
+
+    public Employee EditEmployee(int id, string oldPassword, string newPassword) {
+        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
+        if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword)) return null!;
+
+        //tmp... update query using employee id...
+        List<Employee> employeeDb = _ier.GetEmployees();
+        foreach(Employee entry in employeeDb) {
+            if(entry.id == id && entry.password.Equals(oldPassword)) {
+                entry.password = newPassword;
+                _ier.PostEmployees(employeeDb);
+                return entry;
+            }
+        }
+        return null!;
+    }
+
+    public Employee EditEmployee(int id, string email) {
+        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
+        if(!_ievs.isEmployee(id) || !_ievs.ValidEmail(email)) return null!;
+
+        //tmp... update query using employee id...
+        List<Employee> employeeDb = _ier.GetEmployees();
+        foreach(Employee entry in employeeDb) {
+            if(entry.id == id) {
+                entry.email = email;
+                _ier.PostEmployees(employeeDb);
+                return entry;
+            }
+        }
+        return null!;
+    }
+    public Employee EditEmployee(int id, int roleId) {
+        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
+        if(!_ievs.isEmployee(id) || !_ievs.ValidRole(roleId)) return null!;
+
+        //tmp... update query using employee id...
+        List<Employee> employeeDb = _ier.GetEmployees();
+        foreach(Employee entry in employeeDb) {
+            if(entry.id == id) {
+                entry.roleID = roleId;
+                _ier.PostEmployees(employeeDb);
+                return entry;
+            }
+        }
         return null!;
     }
 }
