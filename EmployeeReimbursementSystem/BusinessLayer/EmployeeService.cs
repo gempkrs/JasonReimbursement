@@ -84,6 +84,7 @@ public class EmployeeService : IEmployeeService {
         return null!;
     }
 
+    #region // Edit Employee Methods
     public Employee EditEmployee(int id, string oldPassword, string newPassword) {
         // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
         if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword)) return null!;
@@ -130,4 +131,5 @@ public class EmployeeService : IEmployeeService {
         }
         return null!;
     }
+    #endregion
 }
