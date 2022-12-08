@@ -13,7 +13,7 @@
 # Custom
 EmployeeDatabase.json
 TicketDatabase.json
-
+*.sql
 
 
 # User-specific files
