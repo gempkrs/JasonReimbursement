@@ -6,7 +6,7 @@ CREATE TABLE Role (
 
 CREATE TABLE Employee (
     EmployeeId INT IDENTITY(1, 1) PRIMARY KEY,
-    Email NVARCHAR(50),
+    Email NVARCHAR(50) UNIQUE,
     Password NVARCHAR(100),
     RoleId INT NOT NULL
 );
