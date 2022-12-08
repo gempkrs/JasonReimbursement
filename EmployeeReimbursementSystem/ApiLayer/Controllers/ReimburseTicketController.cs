@@ -28,29 +28,31 @@ namespace ApiLayer.Controllers
         }
 
         [HttpGet("PendingTickets")]
-        public ActionResult<List<ReimburseTicket>> PendingTickets(int empId) {
-            List<ReimburseTicket> pendingTickets = _its.GetPendingTickets(empId);
+        public ActionResult<List<ReimburseTicket>> PendingTickets(int managerId) {
+            List<ReimburseTicket> pendingTickets = _its.GetPendingTickets(managerId);
             return Created("path/", pendingTickets);
         }
 
         [HttpPut("Approve")]
-        public ActionResult<ReimburseTicket> Approve(int empId, int ticketId) {
-            ReimburseTicket approvedTicket = _its.ApproveTicket(empId, ticketId);
+        public ActionResult<ReimburseTicket> Approve(int managerId, int ticketId) {
+            ReimburseTicket approvedTicket = _its.ApproveTicket(managerId, ticketId);
             return Created("path/", approvedTicket);
         }
 
         [HttpPut("Deny")]
-        public ActionResult<ReimburseTicket> Deny(int empId, int ticketId) {
-            ReimburseTicket deniedTicket = _its.DenyTicket(empId, ticketId);
+        public ActionResult<ReimburseTicket> Deny(int managerId, int ticketId) {
+            ReimburseTicket deniedTicket = _its.DenyTicket(managerId, ticketId);
             return Created("path/", deniedTicket);
         }
 
+        // TODO Put this in employee controller...
         [HttpGet("EmployeeTickets")]
         public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId) {
             List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId);
             return Created("path/", employeeTickets);
         }
 
+        // TODO Put this in employee controller...
         [HttpGet("EmployeeTicketsByStatus")]
         public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId, int status) {
             List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId, status);

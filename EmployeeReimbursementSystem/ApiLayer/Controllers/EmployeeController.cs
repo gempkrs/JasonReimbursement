@@ -43,14 +43,14 @@ public class EmployeeController : ControllerBase {
     }
 
     [HttpPut("EditEmail")]
-    public ActionResult<Employee> EditEmail(int empId, string email) {
-        Employee employee = _ies.EditEmployee(empId, email);
+    public ActionResult<Employee> EditEmail(int empId, string newEmail) {
+        Employee employee = _ies.EditEmployee(empId, newEmail);
         return Created("path/", employee);
     }
 
     [HttpPut("EditRole")]
-    public ActionResult<Employee> EditRole(int empId, int roleId) {
-        Employee employee = _ies.EditEmployee(empId, roleId);
+    public ActionResult<Employee> EditRole(int empId, int newRoleId) {
+        Employee employee = _ies.EditEmployee(empId, newRoleId);
         return Created("path/", employee);
     }
 }
