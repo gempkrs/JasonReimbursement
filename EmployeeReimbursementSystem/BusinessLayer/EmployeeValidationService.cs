@@ -21,6 +21,7 @@ namespace BusinessLayer
         public bool ValidRole(int roleId);
         public bool ValidRegistration(string email, string pass);
         public bool ValidRegistration(string email, string pass, int roleId);
+        // TODO?, IMPLEMENT: public bool EmailExists(string email);
         public bool isEmployee(int id);
         public bool isManager(int id);
     }
@@ -34,7 +35,15 @@ namespace BusinessLayer
 
         #region // Functions for validating registration
         // Validate input format and ensure the email exists.
-        public bool ValidEmail(string email) {
+        /*
+            Using the unique constraint for the email column gives us an error when we try to insert
+            with the same email. In the repo layer, catch this error and return null. Here, simply make
+            sure the user doesn't enter a trash email.
+            Using the foreign key constraint for the RoleId column gives us an error when we try to insert
+            using an invalid role id. We do not need the ValidRole function anymore.
+            May not need the isEmployee or the isManager function anymore...
+        */
+        public bool ValidEmail(string email) { // TODO, Split into string validation and making a query...?
             string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
             bool validInput = Regex.Match(email, regex).Success;
             // Should start as false, if query returns no records we have unique email.
@@ -47,18 +56,21 @@ namespace BusinessLayer
 
             return (validInput && uniqueEmail);
         }
+
+        // public bool EmailExists(string email)?
+
         public bool ValidPassword(string pass) => Regex.Match(pass, @"^([0-9a-zA-Z]{6,})$").Success;
         public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
         #endregion
         public bool isEmployee(int id) {
-            // TODO TMP; if the query returns 0 records, employee doesn't exist
+            // TODO Change to use SQL, if the query returns 0 records, employee doesn't exist
             foreach(Employee entry in _ier.GetEmployees())
                 if(entry.id == id) return true;
             return false;
         }
 
         public bool isManager(int id) {
-            // TODO TMP; if the query returns 0 records, employee doesn't exist or has no permissions
+            // TODO Change to use sql, if the query returns 0 records, employee doesn't exist or has no permissions
             foreach(Employee entry in _ier.GetEmployees())
                 if(entry.id == id && entry.roleID == 1) return true;
             return false;
