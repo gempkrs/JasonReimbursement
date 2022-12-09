@@ -21,10 +21,14 @@ namespace RepositoryLayer
     public interface IEmployeeRepository {
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
+        Employee PostEmployee(string email, string password);
+        Employee GetEmployee(string email);
+        //Employee GetEmployee(int id);
     }
 
     public class EmployeeRepository : IEmployeeRepository
     {
+        private readonly string ?conString;
         public List<Employee> GetEmployees() {
             if(File.Exists("EmployeeDatabase.json")) {
                 return JsonSerializer.Deserialize<List<Employee>>(File.ReadAllText("EmployeeDatabase.json"))!;
@@ -36,6 +40,16 @@ namespace RepositoryLayer
         public void PostEmployees(List<Employee> employeeDb) {
             string serializedDb = JsonSerializer.Serialize(employeeDb);
             File.WriteAllText("EmployeeDatabase.json", serializedDb);
+        }
+
+        public Employee PostEmployee(string email, string password) {
+            File.WriteAllText("../../ConString.txt", conString);
+            return null!;
+        }
+
+        public Employee GetEmployee(string email) {
+            File.WriteAllText("../../ConString.txt", conString);
+            return null!;
         }
     }
 }

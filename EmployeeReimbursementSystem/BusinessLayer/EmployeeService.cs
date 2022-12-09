@@ -39,20 +39,20 @@ public class EmployeeService : IEmployeeService {
 
     public Employee RegisterEmployee(string email, string password) {
         // Once we use sql, will only need to do insert query in repo
-        List<Employee> dbEmployee = _ier.GetEmployees(); 
-        int id = dbEmployee.Count() + 1; //query count of db 
+        // List<Employee> dbEmployee = _ier.GetEmployees(); 
+        // int id = dbEmployee.Count() + 1; //query count of db 
 
         if(!_ievs.ValidRegistration(email, password)) 
             return null!;
 
         // Create new employee object
-        Employee newEmployee = new Employee(id, email, password);
+        //Employee newEmployee = new Employee(id, email, password);
         
         // later change this to an insert query to update db
-        dbEmployee.Add(newEmployee);
-        _ier.PostEmployees(dbEmployee); 
+        //dbEmployee.Add(newEmployee);
+        //_ier.PostEmployees(dbEmployee); 
         
-        return newEmployee;
+        return _ier.PostEmployee(email, password);
     }
 
     // Overloaded method for registering a manager/employee with a role
