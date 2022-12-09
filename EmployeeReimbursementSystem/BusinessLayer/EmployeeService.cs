@@ -88,19 +88,23 @@ public class EmployeeService : IEmployeeService {
     public Employee EditEmployee(int managerId, int employeeId, int roleId) {
         // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
         if(managerId == employeeId) return null!;
-        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)) return null!;
-        
 
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == employeeId) {
-                entry.roleID = roleId;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
+        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)){
+            Console.WriteLine("Manager exists, role invalid, or employee does not exist.");
+            return null!;
         }
-        return null!;
+        return _ier.UpdateEmployee(employeeId, roleId);
+
+        // //tmp... update query using employee id...
+        // List<Employee> employeeDb = _ier.GetEmployees();
+        // foreach(Employee entry in employeeDb) {
+        //     if(entry.id == employeeId) {
+        //         entry.roleID = roleId;
+        //         _ier.PostEmployees(employeeDb);
+        //         return entry;
+        //     }
+        // }
+        //return null!;
     }
     #endregion
 }

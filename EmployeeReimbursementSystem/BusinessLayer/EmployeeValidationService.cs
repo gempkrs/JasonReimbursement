@@ -43,37 +43,25 @@ namespace BusinessLayer
             using an invalid role id. We do not need the ValidRole function anymore.
             May not need the isEmployee or the isManager function anymore...
         */
-        public bool ValidEmail(string email) { // TODO, Split into string validation and making a query...?
+        public bool ValidEmail(string email) {
             string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
-            bool validInput = Regex.Match(email, regex).Success;
-            // Should start as false, if query returns no records we have unique email.
-            bool uniqueEmail = true;
-            
-            // TMP
-            foreach(Employee e in _ier.GetEmployees()) {
-                if(e.email.Equals(email)) uniqueEmail = false;
-            }
-
-            return (validInput && uniqueEmail);
-        }
-
-        // public bool EmailExists(string email)?
-
+            return Regex.Match(email, regex).Success;
+        }            
         public bool ValidPassword(string pass) => Regex.Match(pass, @"^([0-9a-zA-Z]{6,})$").Success;
         public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
         #endregion
+
         public bool isEmployee(int id) {
-            // TODO Change to use SQL, if the query returns 0 records, employee doesn't exist
-            foreach(Employee entry in _ier.GetEmployees())
-                if(entry.id == id) return true;
-            return false;
+            // TODO Change to use SQL, if the query returns 0 records, employee doesn't exist            
+            if(_ier.GetEmployee(id) is null) return false;
+            else return true;
         }
 
         public bool isManager(int id) {
             // TODO Change to use sql, if the query returns 0 records, employee doesn't exist or has no permissions
-            foreach(Employee entry in _ier.GetEmployees())
-                if(entry.id == id && entry.roleID == 1) return true;
-            return false;
+            Employee tmp = _ier.GetEmployee(id);
+            if(tmp is null || tmp.roleID == 0) return false;
+            else return true;
         }
     }
 }

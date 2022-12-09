@@ -22,6 +22,8 @@ namespace RepositoryLayer
     public interface IEmployeeRepository {
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
+        Employee UpdateEmployee(int id, int roleId);
+        Employee UpdateEmployee(int id, string newInfo);
         Employee PostEmployee(string email, string password);
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
@@ -31,6 +33,7 @@ namespace RepositoryLayer
 
     public class EmployeeRepository : IEmployeeRepository
     {
+        // TODO Deprecate
         public List<Employee> GetEmployees() {
             if(File.Exists("EmployeeDatabase.json")) {
                 return JsonSerializer.Deserialize<List<Employee>>(File.ReadAllText("EmployeeDatabase.json"))!;
@@ -39,11 +42,47 @@ namespace RepositoryLayer
             }
         }
 
+        // TODO Deprecate
         public void PostEmployees(List<Employee> employeeDb) {
             string serializedDb = JsonSerializer.Serialize(employeeDb);
             File.WriteAllText("EmployeeDatabase.json", serializedDb);
         }
 
+        #region // Put methods... update role, pass, or email.
+        public Employee UpdateEmployee(int id, int roleId) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string updateEmployeeQuery = "";
+                SqlCommand command = new SqlCommand(updateEmployeeQuery, connection);
+                // ... 
+
+                try {
+                    connection.Open();
+                } catch(Exception e) {
+                    Console.WriteLine("Update Failure\n" + e.Message);
+                }
+            }
+            return null!;
+        }
+
+        public Employee UpdateEmployee(int id, string info) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string updateEmployeeQuery = "";
+                SqlCommand command = new SqlCommand(updateEmployeeQuery, connection);
+                // ... 
+
+                try {
+                    connection.Open();
+                } catch(Exception e) {
+                    Console.WriteLine("Update Failure\n" + e.Message);
+                }
+            }
+            return null!;
+        }
+        #endregion
+
+        #region // Post methods...
         public Employee PostEmployee(string email, string password) {
             string conStirng = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conStirng)) {
@@ -87,6 +126,7 @@ namespace RepositoryLayer
                 }
             }
         }
+        #endregion
 
         #region  // Get Methods: retrieve unique employee by email, id, or email & password
         public Employee GetEmployee(string email) {
@@ -144,7 +184,6 @@ namespace RepositoryLayer
                 }
             }
         }
-        #endregion
 
         public Employee LoginEmployee(string email, string password) {
             string conString = File.ReadAllText("../../ConString.txt");
@@ -174,5 +213,6 @@ namespace RepositoryLayer
                 }
             }
         }
+        #endregion
     }
 }
