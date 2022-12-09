@@ -37,20 +37,20 @@ public class EmployeeController : ControllerBase {
     }
 
     [HttpPut("EditPassword")]
-    public ActionResult<Employee> EditPassword(int empId, string oldPassword, string newPassword) {
-        Employee employee = _ies.EditEmployee(empId, oldPassword, newPassword);
+    public ActionResult<Employee> EditPassword(int targetId, string oldPassword, string newPassword) {
+        Employee employee = _ies.EditEmployee(targetId, oldPassword, newPassword);
         return Created("path/", employee);
     }
 
     [HttpPut("EditEmail")]
-    public ActionResult<Employee> EditEmail(int empId, string newEmail) {
-        Employee employee = _ies.EditEmployee(empId, newEmail);
+    public ActionResult<Employee> EditEmail(int targetId, string newEmail) {
+        Employee employee = _ies.EditEmployee(targetId, newEmail);
         return Created("path/", employee);
     }
 
-    [HttpPut("EditRole")]
-    public ActionResult<Employee> EditRole(int empId, int newRoleId) {
-        Employee employee = _ies.EditEmployee(empId, newRoleId);
+    [HttpPut("ChangeRole")]
+    public ActionResult<Employee> EditRole(int managerId, int targetId, int newRoleId) {
+        Employee employee = _ies.EditEmployee(managerId, targetId, newRoleId);
         return Created("path/", employee);
     }
 }

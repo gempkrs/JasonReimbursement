@@ -11,15 +11,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.Data.SqlClient;
 
 // Importing necessary layers
 using ModelLayer;
 
+// TODO Refactor
 namespace RepositoryLayer
 {
     public interface IEmployeeRepository {
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
+        Employee PostEmployee(string email, string password);
+        Employee GetEmployee(string email);
+        Employee GetEmployee(int id);
     }
 
     public class EmployeeRepository : IEmployeeRepository
@@ -36,5 +41,67 @@ namespace RepositoryLayer
             string serializedDb = JsonSerializer.Serialize(employeeDb);
             File.WriteAllText("EmployeeDatabase.json", serializedDb);
         }
+
+        public Employee PostEmployee(string email, string password) {
+            return null!;
+        }
+
+        #region  // Get Methods: retrieve unique employee by email or id
+        public Employee GetEmployee(string email) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email";
+                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                command.Parameters.AddWithValue("@Email", email);
+                try {
+                    connection.Open();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        if(!reader.HasRows) return null!;
+                        else {
+                            reader.Read();
+                            return new Employee(
+                                (int)reader[0], 
+                                (string)reader[1], 
+                                (string)reader[2], 
+                                (int)reader[3]
+                            );
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                    return null!;
+                }
+            }
+        }
+
+        public Employee GetEmployee(int id) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE EmployeeId = @id";
+                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                command.Parameters.AddWithValue("@id", id);
+                try {
+                    connection.Open();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        if(!reader.HasRows) return null!;
+                        else {
+                            reader.Read();
+                            return new Employee(
+                                (int)reader[0], 
+                                (string)reader[1], 
+                                (string)reader[2], 
+                                (int)reader[3]
+                            );
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                    return null!;
+                }
+            }
+        }
+        #endregion
     }
 }

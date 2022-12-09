@@ -24,7 +24,7 @@ public interface IEmployeeService {
     
     public Employee EditEmployee(int id, string oldPassword, string newPassword);
     public Employee EditEmployee(int id, string email);
-    public Employee EditEmployee(int id, int roleId);
+    public Employee EditEmployee(int managerId, int employeeId, int roleId);
 }
 
 // TODO: Make user/ticket validation it's own class(es) & use it when validation is necessary
@@ -39,20 +39,21 @@ public class EmployeeService : IEmployeeService {
 
     public Employee RegisterEmployee(string email, string password) {
         // Once we use sql, will only need to do insert query in repo
-        List<Employee> dbEmployee = _ier.GetEmployees(); 
-        int id = dbEmployee.Count() + 1; //query count of db 
+        // List<Employee> dbEmployee = _ier.GetEmployees(); 
+        // int id = dbEmployee.Count() + 1; //query count of db 
 
         if(!_ievs.ValidRegistration(email, password)) 
             return null!;
+        return _ier.GetEmployee(email);
 
         // Create new employee object
-        Employee newEmployee = new Employee(id, email, password);
+        //Employee newEmployee = new Employee(id, email, password);
         
         // later change this to an insert query to update db
-        dbEmployee.Add(newEmployee);
-        _ier.PostEmployees(dbEmployee); 
+        //dbEmployee.Add(newEmployee);
+        //_ier.PostEmployees(dbEmployee); 
         
-        return newEmployee;
+        //return _ier.PostEmployee(email, password);
     }
 
     // Overloaded method for registering a manager/employee with a role
@@ -116,14 +117,16 @@ public class EmployeeService : IEmployeeService {
         }
         return null!;
     }
-    public Employee EditEmployee(int id, int roleId) {
+    public Employee EditEmployee(int managerId, int employeeId, int roleId) {
         // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(!_ievs.isEmployee(id) || !_ievs.ValidRole(roleId)) return null!;
+        if(managerId == employeeId) return null!;
+        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)) return null!;
+        
 
         //tmp... update query using employee id...
         List<Employee> employeeDb = _ier.GetEmployees();
         foreach(Employee entry in employeeDb) {
-            if(entry.id == id) {
+            if(entry.id == employeeId) {
                 entry.roleID = roleId;
                 _ier.PostEmployees(employeeDb);
                 return entry;

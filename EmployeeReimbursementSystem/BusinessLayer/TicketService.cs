@@ -69,6 +69,7 @@ public class TicketService : ITicketService {
         List<ReimburseTicket> ticketDb = _itr.GetTickets();
         foreach(ReimburseTicket ticket in ticketDb) {
             if(ticket.id == ticketId && ticket.status == 0) {
+                if(ticket.employeeID == empId) return null!;
                 ticket.status = 1;
                 _itr.PostTickets(ticketDb);
                 return ticket;
@@ -86,6 +87,7 @@ public class TicketService : ITicketService {
         List<ReimburseTicket> ticketDb = _itr.GetTickets();
         foreach(ReimburseTicket ticket in ticketDb) {
             if(ticket.id == ticketId && ticket.status == 0) {
+                if(ticket.employeeID == empId) return null!; // TODO CHECK IF MANAGER IS TRYING TO APPROVE/DENY THEIR OWN TICKET
                 ticket.status = 2;
                 _itr.PostTickets(ticketDb);
                 return ticket;
