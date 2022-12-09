@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.Data.SqlClient;
 
 // Importing necessary layers
 using ModelLayer;
@@ -23,12 +24,11 @@ namespace RepositoryLayer
         void PostEmployees(List<Employee> employeeDB);
         Employee PostEmployee(string email, string password);
         Employee GetEmployee(string email);
-        //Employee GetEmployee(int id);
+        Employee GetEmployee(int id);
     }
 
     public class EmployeeRepository : IEmployeeRepository
     {
-        private readonly string ?conString;
         public List<Employee> GetEmployees() {
             if(File.Exists("EmployeeDatabase.json")) {
                 return JsonSerializer.Deserialize<List<Employee>>(File.ReadAllText("EmployeeDatabase.json"))!;
@@ -43,13 +43,65 @@ namespace RepositoryLayer
         }
 
         public Employee PostEmployee(string email, string password) {
-            File.WriteAllText("../../ConString.txt", conString);
             return null!;
         }
 
+        #region  // Get Methods: retrieve unique employee by email or id
         public Employee GetEmployee(string email) {
-            File.WriteAllText("../../ConString.txt", conString);
-            return null!;
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email";
+                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                command.Parameters.AddWithValue("@Email", email);
+                try {
+                    connection.Open();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        if(!reader.HasRows) return null!;
+                        else {
+                            reader.Read();
+                            return new Employee(
+                                (int)reader[0], 
+                                (string)reader[1], 
+                                (string)reader[2], 
+                                (int)reader[3]
+                            );
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                    return null!;
+                }
+            }
         }
+
+        public Employee GetEmployee(int id) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE EmployeeId = @id";
+                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                command.Parameters.AddWithValue("@id", id);
+                try {
+                    connection.Open();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        if(!reader.HasRows) return null!;
+                        else {
+                            reader.Read();
+                            return new Employee(
+                                (int)reader[0], 
+                                (string)reader[1], 
+                                (string)reader[2], 
+                                (int)reader[3]
+                            );
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                    return null!;
+                }
+            }
+        }
+        #endregion
     }
 }

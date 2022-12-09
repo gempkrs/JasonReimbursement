@@ -44,6 +44,7 @@ public class EmployeeService : IEmployeeService {
 
         if(!_ievs.ValidRegistration(email, password)) 
             return null!;
+        return _ier.GetEmployee(email);
 
         // Create new employee object
         //Employee newEmployee = new Employee(id, email, password);
@@ -52,7 +53,7 @@ public class EmployeeService : IEmployeeService {
         //dbEmployee.Add(newEmployee);
         //_ier.PostEmployees(dbEmployee); 
         
-        return _ier.PostEmployee(email, password);
+        //return _ier.PostEmployee(email, password);
     }
 
     // Overloaded method for registering a manager/employee with a role
