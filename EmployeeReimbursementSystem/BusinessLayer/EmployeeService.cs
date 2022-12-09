@@ -37,39 +37,17 @@ public class EmployeeService : IEmployeeService {
         this._ievs = new EmployeeValidationService(_ier);
     }
 
-    public Employee RegisterEmployee(string email, string password) {
-        // Once we use sql, will only need to do insert query in repo
-        // List<Employee> dbEmployee = _ier.GetEmployees(); 
-        // int id = dbEmployee.Count() + 1; //query count of db 
-
+    public Employee RegisterEmployee(string email, string password) { 
         if(!_ievs.ValidRegistration(email, password)) 
             return null!;
-        return _ier.GetEmployee(email);
-
-        // Create new employee object
-        //Employee newEmployee = new Employee(id, email, password);
-        
-        // later change this to an insert query to update db
-        //dbEmployee.Add(newEmployee);
-        //_ier.PostEmployees(dbEmployee); 
-        
-        //return _ier.PostEmployee(email, password);
+        return _ier.PostEmployee(email, password);
     }
 
     // Overloaded method for registering a manager/employee with a role
     public Employee RegisterEmployee(string email, string password, int roleid) {
-        List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
-        int id = dbEmployee.Count() + 1; // TMP
-
         if(!_ievs.ValidRegistration(email, password, roleid)) 
             return null!;
-
-        Employee newEmployee = new Employee(id, email, password, roleid);
-        
-        dbEmployee.Add(newEmployee);
-        _ier.PostEmployees(dbEmployee); 
-
-        return newEmployee;
+        return _ier.PostEmployee(email, password, roleid);
     }
 
     public Employee LoginEmployee(string email, string password) {

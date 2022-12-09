@@ -23,6 +23,8 @@ namespace RepositoryLayer
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
         Employee PostEmployee(string email, string password);
+        // TODO 
+        Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
         Employee GetEmployee(int id);
     }
@@ -43,7 +45,47 @@ namespace RepositoryLayer
         }
 
         public Employee PostEmployee(string email, string password) {
-            return null!;
+            string conStirng = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conStirng)) {
+                string insertEmployeeQuery = "INSERT INTO Employee (Email, Password, RoleId) VALUES (@email, @password, @RoleId);";
+                SqlCommand command = new SqlCommand(insertEmployeeQuery, connection);
+                command.Parameters.AddWithValue("@email", email);
+                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@RoleId", 0);
+                try {
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if(rowsAffected == 1) {
+                        Console.WriteLine("Post Success");
+                        return GetEmployee(email);
+                    } else return null!;
+                } catch (Exception e) {
+                    Console.WriteLine("Insertion Failure\n" + e.Message);
+                    return null!;
+                }
+            }
+        }
+
+        public Employee PostEmployee(string email, string password, int roleId) {
+            string conStirng = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conStirng)) {
+                string insertEmployeeQuery = "INSERT INTO Employee (Email, Password, RoleId) VALUES (@email, @password, @RoleId);";
+                SqlCommand command = new SqlCommand(insertEmployeeQuery, connection);
+                command.Parameters.AddWithValue("@email", email);
+                command.Parameters.AddWithValue("@password", password);
+                command.Parameters.AddWithValue("@RoleId", roleId);
+                try {
+                    connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if(rowsAffected == 1) {
+                        Console.WriteLine("Post Success");
+                        return GetEmployee(email);
+                    } else return null!;
+                } catch (Exception e) {
+                    Console.WriteLine("Insertion Failure\n" + e.Message);
+                    return null!;
+                }
+            }
         }
 
         #region  // Get Methods: retrieve unique employee by email or id
