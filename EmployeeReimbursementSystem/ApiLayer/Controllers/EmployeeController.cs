@@ -19,14 +19,14 @@ public class EmployeeController : ControllerBase {
     public EmployeeController(IEmployeeService ies) => this._ies = ies;
         
     [HttpPost("RegisterEmployee")]
-    public ActionResult<Employee> RegisterEmployee(string email, string password) {
-        Employee newEmployee = _ies.RegisterEmployee(email, password);
+    public ActionResult<Employee> PostEmployee(string email, string password) {
+        Employee newEmployee = _ies.PostEmployee(email, password);
         return Created("path/to/db", newEmployee);
     }
 
     [HttpPost("RegisterManager")]
-    public ActionResult<Employee> RegisterEmployee(string email, string password, int roleid) {
-        Employee newEmployee = _ies.RegisterEmployee(email, password, roleid);
+    public ActionResult<Employee> PostEmployee(string email, string password, int roleid) {
+        Employee newEmployee = _ies.PostEmployee(email, password, roleid);
         return Created("path/to/db", newEmployee);
     }
 
@@ -36,20 +36,20 @@ public class EmployeeController : ControllerBase {
         return Created("path/", employee);
     }
 
-    [HttpPut("EditPassword")]
-    public ActionResult<Employee> EditPassword(int targetId, string oldPassword, string newPassword) {
+    [HttpPut("ChangePassword")]
+    public ActionResult<Employee> EditEmployee(int targetId, string oldPassword, string newPassword) {
         Employee employee = _ies.EditEmployee(targetId, oldPassword, newPassword);
         return Created("path/", employee);
     }
 
-    [HttpPut("EditEmail")]
-    public ActionResult<Employee> EditEmail(int targetId, string newEmail) {
+    [HttpPut("ChangeEmail")]
+    public ActionResult<Employee> EditEmployee(int targetId, string newEmail) {
         Employee employee = _ies.EditEmployee(targetId, newEmail);
         return Created("path/", employee);
     }
 
     [HttpPut("ChangeRole")]
-    public ActionResult<Employee> EditRole(int managerId, int targetId, int newRoleId) {
+    public ActionResult<Employee> EditEmployee(int managerId, int targetId, int newRoleId) {
         Employee employee = _ies.EditEmployee(managerId, targetId, newRoleId);
         return Created("path/", employee);
     }

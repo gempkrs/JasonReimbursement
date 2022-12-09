@@ -23,10 +23,10 @@ namespace RepositoryLayer
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
         Employee PostEmployee(string email, string password);
-        // TODO 
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
         Employee GetEmployee(int id);
+        Employee LoginEmployee(string email, string password);
     }
 
     public class EmployeeRepository : IEmployeeRepository
@@ -88,7 +88,7 @@ namespace RepositoryLayer
             }
         }
 
-        #region  // Get Methods: retrieve unique employee by email or id
+        #region  // Get Methods: retrieve unique employee by email, id, or email & password
         public Employee GetEmployee(string email) {
             string conString = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conString)) {
@@ -145,5 +145,34 @@ namespace RepositoryLayer
             }
         }
         #endregion
+
+        public Employee LoginEmployee(string email, string password) {
+            string conString = File.ReadAllText("../../ConString.txt");
+            using(SqlConnection connection = new SqlConnection(conString)) {
+                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email AND Password = @password";
+                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                command.Parameters.AddWithValue("@Email", email);
+                command.Parameters.AddWithValue("@Password", password);
+                try {
+                    connection.Open();
+                    
+                    using(SqlDataReader reader = command.ExecuteReader()) {
+                        if(!reader.HasRows) return null!;
+                        else {
+                            reader.Read();
+                            return new Employee(
+                                (int)reader[0], 
+                                (string)reader[1], 
+                                (string)reader[2], 
+                                (int)reader[3]
+                            );
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e.Message);
+                    return null!;
+                }
+            }
+        }
     }
 }
