@@ -20,54 +20,54 @@ using RepositoryLayer;
 namespace Tests.Business;
 public class XUnitEmployeeService {
     // Employee Registration Test ... Might be deprecated after the validation tests...
-    [Theory]
-    [InlineData("passtest@email.com", "123Pass")]
-    [InlineData("test@email.com", "123Fail")]
-    [InlineData("failtest2@email.com", "")]
-    [InlineData("", "123Fail")]
-    [InlineData("", "")]
-    public void RegisterValidEmployeeToDatabase(string email, string password) {
-        // Arrange
-        IEmployeeRepository ier = new EmployeeRepository();
-        List<Employee> dbEmployee = ier.GetEmployees();
-        dbEmployee.Add(new Employee(1, "test@email.com", "123456"));
-        IEmployeeService _ies = new EmployeeService(ier);
+    // [Theory]
+    // [InlineData("passtest@email.com", "123Pass")]
+    // [InlineData("test@email.com", "123Fail")]
+    // [InlineData("failtest2@email.com", "")]
+    // [InlineData("", "123Fail")]
+    // [InlineData("", "")]
+    // public void RegisterValidEmployeeToDatabase(string email, string password) {
+    //     // Arrange
+    //     IEmployeeRepository ier = new EmployeeRepository();
+    //     List<Employee> dbEmployee = ier.GetEmployees();
+    //     dbEmployee.Add(new Employee(1, "test@email.com", "123456"));
+    //     IEmployeeService _ies = new EmployeeService(ier);
 
-        // Act
-        Employee newEmployee = _ies.RegisterEmployee(email, password);
+    //     // Act
+    //     Employee newEmployee = _ies.RegisterEmployee(email, password);
 
-        // Assert
-        //Make sure user registers with our conditions
-        if(email.Length < 1 || password.Length < 1) 
-            Assert.True(newEmployee is null);
+    //     // Assert
+    //     //Make sure user registers with our conditions
+    //     if(email.Length < 1 || password.Length < 1) 
+    //         Assert.True(newEmployee is null);
         
-        // Make sure the user is using a unique email
-        foreach(Employee e in dbEmployee) {
-            if((e.email).Equals(email)) 
-                Assert.True(newEmployee is null);
-        }
-    }
+    //     // Make sure the user is using a unique email
+    //     foreach(Employee e in dbEmployee) {
+    //         if((e.email).Equals(email)) 
+    //             Assert.True(newEmployee is null);
+    //     }
+    // }
     // Employee Registration Test ... Might be deprecated after the validation tests...
     // Employee With Role Registration Test
-    [Theory]
-    [InlineData("NewManager@email.com", "123Pass", 1)]
-    [InlineData("NewEmployee@email.com", "123Pass", 0)]
-    [InlineData("NewEmployee@email.com", "123Pass", 2)]
-    [InlineData("NewEmployee@email.com", "123Pass", -1)]
-    public void RegisterValidSpecialEmployeeToDatabase(string email, string password, int roleid) {
-        IEmployeeRepository ier = new EmployeeRepository();
-        List<Employee> db = ier.GetEmployees();
-        IEmployeeService _ies = new EmployeeService(ier);
+    // [Theory]
+    // [InlineData("NewManager@email.com", "123Pass", 1)]
+    // [InlineData("NewEmployee@email.com", "123Pass", 0)]
+    // [InlineData("NewEmployee@email.com", "123Pass", 2)]
+    // [InlineData("NewEmployee@email.com", "123Pass", -1)]
+    // public void RegisterValidSpecialEmployeeToDatabase(string email, string password, int roleid) {
+    //     IEmployeeRepository ier = new EmployeeRepository();
+    //     List<Employee> db = ier.GetEmployees();
+    //     IEmployeeService _ies = new EmployeeService(ier);
 
-        Employee newManager = _ies.RegisterEmployee(email, password, roleid);
+    //     Employee newManager = _ies.RegisterEmployee(email, password, roleid);
 
-        if(email.Length < 1 || password.Length < 1 || (0 > roleid || roleid > 1))
-            Assert.True(newManager is null);
-        foreach(Employee e in db) {
-            if((e.email).Equals(email)) 
-                Assert.True(newManager is null);
-        }
-    }
+    //     if(email.Length < 1 || password.Length < 1 || (0 > roleid || roleid > 1))
+    //         Assert.True(newManager is null);
+    //     foreach(Employee e in db) {
+    //         if((e.email).Equals(email)) 
+    //             Assert.True(newManager is null);
+    //     }
+    // }
     // Employee With Role Registration Test
 
     // Login Test... Might be deprecated after the validation tests...

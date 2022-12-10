@@ -18,8 +18,8 @@ namespace BusinessLayer;
 
 // Interface to be used for dependency injection in the api layer
 public interface IEmployeeService {
-    public Employee RegisterEmployee(string email, string password);
-    public Employee RegisterEmployee(string email, string password, int roleid);
+    public Employee PostEmployee(string email, string password);
+    public Employee PostEmployee(string email, string password, int roleid);
     public Employee LoginEmployee(string email, string password);
     
     public Employee EditEmployee(int id, string oldPassword, string newPassword);
@@ -27,7 +27,6 @@ public interface IEmployeeService {
     public Employee EditEmployee(int managerId, int employeeId, int roleId);
 }
 
-// TODO: Make user/ticket validation it's own class(es) & use it when validation is necessary
 public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
@@ -37,102 +36,68 @@ public class EmployeeService : IEmployeeService {
         this._ievs = new EmployeeValidationService(_ier);
     }
 
-    public Employee RegisterEmployee(string email, string password) {
-        // Once we use sql, will only need to do insert query in repo
-        // List<Employee> dbEmployee = _ier.GetEmployees(); 
-        // int id = dbEmployee.Count() + 1; //query count of db 
+    public Employee LoginEmployee(string email, string password) => _ier.LoginEmployee(email, password);
 
+    #region //Registration methods
+    public Employee PostEmployee(string email, string password) { 
         if(!_ievs.ValidRegistration(email, password)) 
             return null!;
-        return _ier.GetEmployee(email);
-
-        // Create new employee object
-        //Employee newEmployee = new Employee(id, email, password);
-        
-        // later change this to an insert query to update db
-        //dbEmployee.Add(newEmployee);
-        //_ier.PostEmployees(dbEmployee); 
-        
-        //return _ier.PostEmployee(email, password);
+        return _ier.PostEmployee(email, password);
     }
 
     // Overloaded method for registering a manager/employee with a role
-    public Employee RegisterEmployee(string email, string password, int roleid) {
-        List<Employee> dbEmployee = _ier.GetEmployees(); // TMP
-        int id = dbEmployee.Count() + 1; // TMP
-
+    public Employee PostEmployee(string email, string password, int roleid) {
         if(!_ievs.ValidRegistration(email, password, roleid)) 
             return null!;
-
-        Employee newEmployee = new Employee(id, email, password, roleid);
-        
-        dbEmployee.Add(newEmployee);
-        _ier.PostEmployees(dbEmployee); 
-
-        return newEmployee;
+        return _ier.PostEmployee(email, password, roleid);
     }
+    #endregion
 
-    public Employee LoginEmployee(string email, string password) {
-        List<Employee> dbEmployees = _ier.GetEmployees(); 
-
-        // TODO Validation... validates itself, if we get no records return null from repo layer
-        foreach(Employee entry in dbEmployees) {
-            if((entry.email).Equals(email) && (entry.password).Equals(password)) {
-                return entry;
-            }
-        }
-        
-        return null!;
-    }
-
-    #region // Edit Employee Methods
+    #region // TODO, Refactor: Edit Employee Methods
     public Employee EditEmployee(int id, string oldPassword, string newPassword) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword)) return null!;
-
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == id && entry.password.Equals(oldPassword)) {
-                entry.password = newPassword;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
+        if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword) || !_ievs.isPassword(id, oldPassword)) {
+            Console.WriteLine("Invalid employeeId, invalid new password, or passwords don't match.");
+            return null!;
         }
-        return null!;
+        // //tmp... update query using employee id...
+        // List<Employee> employeeDb = _ier.GetEmployees();
+        // foreach(Employee entry in employeeDb) {
+        //     if(entry.id == id && entry.password.Equals(oldPassword)) {
+        //         entry.password = newPassword;
+        //         _ier.PostEmployees(employeeDb);
+        //         return entry;
+        //     }
+        // }
+        // return null!;
+        return _ier.UpdateEmployee(id, newPassword);
     }
 
     public Employee EditEmployee(int id, string email) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(!_ievs.isEmployee(id) || !_ievs.ValidEmail(email)) return null!;
-
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == id) {
-                entry.email = email;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
+        if(!_ievs.isEmployee(id) || !_ievs.ValidEmail(email)) {
+            Console.WriteLine("Invalid employeeId, or invalid email");
+            return null!;
         }
-        return null!;
+        // //tmp... update query using employee id...
+        // List<Employee> employeeDb = _ier.GetEmployees();
+        // foreach(Employee entry in employeeDb) {
+        //     if(entry.id == id) {
+        //         entry.email = email;
+        //         _ier.PostEmployees(employeeDb);
+        //         return entry;
+        //     }
+        // }
+        // return null!;
+        return _ier.UpdateEmployee(id, email);
     }
     public Employee EditEmployee(int managerId, int employeeId, int roleId) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
         if(managerId == employeeId) return null!;
-        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)) return null!;
-        
 
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == employeeId) {
-                entry.roleID = roleId;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
+        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)){
+            Console.WriteLine("Invalid managerId, roleId, or EmployeeId.");
+            return null!;
         }
-        return null!;
+        
+        return _ier.UpdateEmployee(employeeId, roleId);
     }
     #endregion
 }
