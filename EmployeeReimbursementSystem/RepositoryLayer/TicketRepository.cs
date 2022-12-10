@@ -20,6 +20,7 @@ public interface ITicketRepository {
 
     ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId);
     ReimburseTicket GetTicket(string ticketId);
+    ReimburseTicket UpdateTicket(string ticketId, int statusId);
 }
 
 public class TicketRepository : ITicketRepository {
@@ -35,6 +36,10 @@ public class TicketRepository : ITicketRepository {
     public void PostTickets(List<ReimburseTicket> ticketDb) {
         string serializedDb = JsonSerializer.Serialize(ticketDb);
         File.WriteAllText("TicketDatabase.json", serializedDb);
+    }
+
+    public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
+        return null!;
     }
 
     public ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId) {

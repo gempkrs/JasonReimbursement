@@ -60,7 +60,10 @@ public class TicketService : ITicketService {
 
     public ReimburseTicket ApproveTicket(int empId, string ticketId) {
         // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
-        if(!_ievs.isManager(empId) || !_itvs.isTicket(ticketId)) return null!;
+        if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
+            Console.WriteLine("Invalid manager Id, manager is trying to edit their own ticket, or ticket doesn't exist");
+            return null!;
+        } 
 
         // //tmp, with sql we will just do update query using ticketId...
         // List<ReimburseTicket> ticketDb = _itr.GetTickets();
@@ -73,25 +76,28 @@ public class TicketService : ITicketService {
         //     }
         // }
 
-        return null!;
+        return _itr.UpdateTicket(ticketId, 1);
     }
 
     public ReimburseTicket DenyTicket(int empId, string ticketId) {
         // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
-        if(!_ievs.isManager(empId) || !_itvs.isTicket(ticketId)) return null!;
+        if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
+            Console.WriteLine("Invalid manager Id, manager is trying to edit their own ticket, or ticket doesn't exist");
+            return null!;
+        } 
 
         // //tmp, with sql we will just do update query using ticketId...
         // List<ReimburseTicket> ticketDb = _itr.GetTickets();
         // foreach(ReimburseTicket ticket in ticketDb) {
         //     if(ticket.id == ticketId && ticket.status == 0) {
-        //         if(ticket.employeeID == empId) return null!; // TODO CHECK IF MANAGER IS TRYING TO APPROVE/DENY THEIR OWN TICKET
+        //         if(ticket.employeeID == empId) return null!;
         //         ticket.status = 2;
         //         _itr.PostTickets(ticketDb);
         //         return ticket;
         //     }
         // }
 
-        return null!;
+        return _itr.UpdateTicket(ticketId, 2);
     }
 
     public List<ReimburseTicket> GetEmployeeTickets(int empId) {

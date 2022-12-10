@@ -17,6 +17,7 @@ public interface ITicketValidationService {
     public bool ValidDescription(string description);
     public bool ValidTicket(string reason, int amount, string description);
     public bool isTicket(string ticketId);
+    public bool ValidStatusChange(int managerId, string ticketId);
 }
 
 public class TicketValidationService : ITicketValidationService {
@@ -32,6 +33,13 @@ public class TicketValidationService : ITicketValidationService {
     // TODO? Might not need this anymore.
     // TODO Make this work with SQL
     public bool isTicket(string ticketId) {
-        return false;
+        if(_itr.GetTicket(ticketId) is null) return false;
+        else return true;
+    }
+
+    public bool ValidStatusChange(int managerId, string ticketId) {
+        ReimburseTicket tmp = _itr.GetTicket(ticketId);
+        if(tmp.employeeID == managerId || tmp is null) return false;
+        return true;
     }
 }
