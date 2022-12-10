@@ -15,29 +15,15 @@ using ModelLayer;
 namespace RepositoryLayer;
 
 public interface ITicketRepository {
-    List<ReimburseTicket> GetTickets();
-    void PostTickets(List<ReimburseTicket> ticketDB);
-
     ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId);
     ReimburseTicket GetTicket(string ticketId);
     ReimburseTicket UpdateTicket(string ticketId, int statusId);
+    List<ReimburseTicket> GetTickets(int employeeId);
+    List<ReimburseTicket> GetTickets(int employeeId, int statusId);
+    List<ReimburseTicket> GetPending(int managerId);
 }
 
 public class TicketRepository : ITicketRepository {
-    // TODO Deprecate
-    public List<ReimburseTicket> GetTickets() {
-        if(File.Exists("TicketDatabase.json")) {
-            return JsonSerializer.Deserialize<List<ReimburseTicket>>(File.ReadAllText("TicketDatabase.json"))!;
-        } else {
-            return new List<ReimburseTicket>();
-        }
-    }
-    // TODO Deprecate
-    public void PostTickets(List<ReimburseTicket> ticketDb) {
-        string serializedDb = JsonSerializer.Serialize(ticketDb);
-        File.WriteAllText("TicketDatabase.json", serializedDb);
-    }
-
     public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -77,7 +63,7 @@ public class TicketRepository : ITicketRepository {
                 int rowsAffected = command.ExecuteNonQuery();
                 if(rowsAffected == 1) {
                     Console.WriteLine("Post Success");
-                    return GetTicket(guid); // TODO MAKE TICKET ID A KEY TO BE ABLE TO ACCESS?
+                    return GetTicket(guid);
                 } else {
                     return null!;
                 }
@@ -113,6 +99,113 @@ public class TicketRepository : ITicketRepository {
                 }
             } catch(Exception e) {
                 Console.WriteLine(e.Message);
+                return null!;
+            }
+        }
+    }
+
+    public List<ReimburseTicket> GetTickets(int employeeId) {
+        string conString = File.ReadAllText("../../ConString.txt");
+        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
+        using(SqlConnection connection = new SqlConnection(conString)) {
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId;";
+            SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
+            command.Parameters.AddWithValue("@employeeId", employeeId);
+
+            try {
+                connection.Open();
+
+                using(SqlDataReader reader = command.ExecuteReader()) {
+                    if(!reader.HasRows) return null!;
+                    while(reader.Read()) {
+                        ReimburseTicket newTicket = new ReimburseTicket(
+                            (string) reader[0],
+                            (string) reader[1],
+                            (int) reader[2],
+                            (string) reader[3],
+                            (int) reader[4],
+                            (int) reader[5]
+                        );
+                        employeeTickets.Add(newTicket);
+                    }
+                    Console.WriteLine("GET Success");
+                    return employeeTickets;
+                }
+            } catch(Exception e) {
+                Console.WriteLine("GET error\n" + e.Message);
+                return null!;
+            }
+        }
+    }
+
+    public List<ReimburseTicket> GetTickets(int employeeId, int statusId) {
+        string conString = File.ReadAllText("../../ConString.txt");
+        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
+        using(SqlConnection connection = new SqlConnection(conString)) {
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId AND StatusId = @statusId;";
+            SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
+            command.Parameters.AddWithValue("@employeeId", employeeId);
+            command.Parameters.AddWithValue("@statusId", statusId);
+
+            try {
+                connection.Open();
+
+                using(SqlDataReader reader = command.ExecuteReader()) {
+                    if(!reader.HasRows) return null!;
+                    while(reader.Read()) {
+                        if((int)reader[4] == statusId) {
+                            ReimburseTicket newTicket = new ReimburseTicket(
+                                (string) reader[0],
+                                (string) reader[1],
+                                (int) reader[2],
+                                (string) reader[3],
+                                (int) reader[4],
+                                (int) reader[5]
+                            );
+                            employeeTickets.Add(newTicket);
+                        }
+                    }
+                    Console.WriteLine("GET Success");
+                    return employeeTickets;
+                }
+            } catch(Exception e) {
+                Console.WriteLine("GET error\n" + e.Message);
+                return null!;
+            }
+        }
+    }
+
+    public List<ReimburseTicket> GetPending(int managerId) {
+                string conString = File.ReadAllText("../../ConString.txt");
+        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
+        using(SqlConnection connection = new SqlConnection(conString)) {
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE StatusId = @statusId;";
+            SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
+            command.Parameters.AddWithValue("@statusId", 0);
+
+            try {
+                connection.Open();
+
+                using(SqlDataReader reader = command.ExecuteReader()) {
+                    if(!reader.HasRows) return null!;
+                    while(reader.Read()) {
+                        if((int)reader[4] == 0) {
+                            ReimburseTicket newTicket = new ReimburseTicket(
+                                (string) reader[0],
+                                (string) reader[1],
+                                (int) reader[2],
+                                (string) reader[3],
+                                (int) reader[4],
+                                (int) reader[5]
+                            );
+                            employeeTickets.Add(newTicket);
+                        }
+                    }
+                    Console.WriteLine("GET Success");
+                    return employeeTickets;
+                }
+            } catch(Exception e) {
+                Console.WriteLine("GET error\n" + e.Message);
                 return null!;
             }
         }

@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 namespace ModelLayer;
 
 public class ReimburseTicket {
-    // TODO get rid of the id field
-    //public int id{get; set;}
     public string ?guid{get;set;}
     public int employeeID{get; set;}
     public string ?reason{get; set;}
@@ -32,17 +30,5 @@ public class ReimburseTicket {
         this.status = statusId;
         this.employeeID = employeeID;
     }
-
-    // TODO Deprecate...
-    // public ReimburseTicket(int id, string reason, int amount, string description, int statusId, int employeeID) {
-    //     this.id = id;
-    //     this.reason = reason;
-    //     this.amount = amount;
-    //     this.description = description;
-    //     this.status = statusId;
-    //     this.employeeID = employeeID;
-    //     this.guid = "";
-    // }
-
     public ReimburseTicket() {}
 }

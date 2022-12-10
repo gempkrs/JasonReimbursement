@@ -42,87 +42,48 @@ public class TicketService : ITicketService {
         return _itr.PostTicket(Guid.NewGuid().ToString(), reason, amount, desc, empId);
     }
 
-    public List<ReimburseTicket> GetPendingTickets(int empId) {
-        // TODO, TMP; until sql works... in db, first check if employee is a manager; then query for tickets that are pending
-        if(!_ievs.isManager(empId)) {
+    public List<ReimburseTicket> GetPendingTickets(int managerId) {
+        if(!_ievs.isManager(managerId)) {
             Console.WriteLine("Employee does not exist or have the righ permissions");
             return null!;
         } 
         
-        // tmp... with sql we will get list from repo layer(?)
-        // List<ReimburseTicket> pendingTickets = new List<ReimburseTicket>();
-        // foreach(ReimburseTicket ticket in _itr.GetTickets()) {
-        //     if(ticket.status == 0) pendingTickets.Add(ticket);
-        // }
-
-        return null!;
+        return _itr.GetPending(managerId);
     }
 
     public ReimburseTicket ApproveTicket(int empId, string ticketId) {
-        // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
         if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
             Console.WriteLine("Invalid manager Id, manager is trying edit an invalid ticket, or ticket doesn't exist");
             return null!;
         } 
 
-        // //tmp, with sql we will just do update query using ticketId...
-        // List<ReimburseTicket> ticketDb = _itr.GetTickets();
-        // foreach(ReimburseTicket ticket in ticketDb) {
-        //     if(ticket.id == ticketId && ticket.status == 0) {
-        //         if(ticket.employeeID == empId) return null!;
-        //         ticket.status = 1;
-        //         _itr.PostTickets(ticketDb);
-        //         return ticket;
-        //     }
-        // }
-
         return _itr.UpdateTicket(ticketId, 1);
     }
 
     public ReimburseTicket DenyTicket(int empId, string ticketId) {
-        // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
         if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
             Console.WriteLine("Invalid manager Id, manager is trying to edit an invalid ticket, or ticket doesn't exist");
             return null!;
         } 
 
-        // //tmp, with sql we will just do update query using ticketId...
-        // List<ReimburseTicket> ticketDb = _itr.GetTickets();
-        // foreach(ReimburseTicket ticket in ticketDb) {
-        //     if(ticket.id == ticketId && ticket.status == 0) {
-        //         if(ticket.employeeID == empId) return null!;
-        //         ticket.status = 2;
-        //         _itr.PostTickets(ticketDb);
-        //         return ticket;
-        //     }
-        // }
-
         return _itr.UpdateTicket(ticketId, 2);
     }
 
     public List<ReimburseTicket> GetEmployeeTickets(int empId) {
-        // TODO, Tmp; until sql works... in db, check if employee exists and if they do, use their id to query their tickets.
-        if(!_ievs.isEmployee(empId)) return null!;
+        if(!_ievs.isEmployee(empId)) {
+            Console.WriteLine("Invalid employeeId");
+            return null!;
+        } 
 
-        // Tmp, with sql we will do a query using the employee id.
-        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
-        foreach(ReimburseTicket ticket in _itr.GetTickets()) {
-            if(ticket.employeeID == empId) employeeTickets.Add(ticket);
-        }
-
-        return employeeTickets;
+        return _itr.GetTickets(empId);
     }
 
     public List<ReimburseTicket> GetEmployeeTickets(int empId, int status) {
-        // TODO, Tmp; until sql works... in db, check if employee exists and if they do, use their id to query their tickets.
-        if(!_ievs.isEmployee(empId)) return null!;
-
-        // Tmp, with sql we will do a query using the employee id.
-        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
-        foreach(ReimburseTicket ticket in _itr.GetTickets()) {
-            if(ticket.employeeID == empId && ticket.status == status) employeeTickets.Add(ticket);
+        if(!_ievs.isEmployee(empId)) {
+            Console.WriteLine("Invalid employeeId");
+            return null!;
         }
-        
-        return employeeTickets;
+    
+        return _itr.GetTickets(empId, status);
     }
 }
