@@ -14,9 +14,13 @@ namespace ApiLayer.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class EmployeeController : ControllerBase {
-    // Dependency Injection for Employee Service class
+    // Dependency Injection for Employee Service class and Ticket Service class
     private readonly IEmployeeService _ies;
-    public EmployeeController(IEmployeeService ies) => this._ies = ies;
+    private readonly ITicketService _its;
+    public EmployeeController(IEmployeeService ies, ITicketService its) {
+        this._ies = ies;
+        this._its = its;
+    }
         
     [HttpPost("RegisterEmployee")]
     public ActionResult<Employee> PostEmployee(string email, string password) {
@@ -52,5 +56,17 @@ public class EmployeeController : ControllerBase {
     public ActionResult<Employee> EditEmployee(int managerId, int targetId, int newRoleId) {
         Employee employee = _ies.EditEmployee(managerId, targetId, newRoleId);
         return Created("path/", employee);
+    }
+
+    [HttpGet("EmployeeTickets")]
+    public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId) {
+        List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId);
+        return Created("path/", employeeTickets);
+    }
+
+    [HttpGet("EmployeeTicketsByStatus")]
+    public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId, int status) {
+        List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId, status);
+        return Created("path/", employeeTickets);
     }
 }
