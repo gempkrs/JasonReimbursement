@@ -186,8 +186,8 @@ namespace RepositoryLayer
         public Employee GetEmployee(int id) {
             string conString = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conString)) {
-                string queryEmployeeByEmail = "SELECT * FROM Employee WHERE EmployeeId = @id";
-                SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
+                string queryEmployeeById = "SELECT * FROM Employee WHERE EmployeeId = @id";
+                SqlCommand command = new SqlCommand(queryEmployeeById, connection);
                 command.Parameters.AddWithValue("@id", id);
                 try {
                     connection.Open();

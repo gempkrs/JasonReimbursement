@@ -16,7 +16,8 @@ public interface ITicketValidationService {
     public bool ValidAmount(int amount);
     public bool ValidDescription(string description);
     public bool ValidTicket(string reason, int amount, string description);
-    public bool isTicket(int ticketId);
+    public bool isTicket(string ticketId);
+    public bool ValidStatusChange(int managerId, string ticketId);
 }
 
 public class TicketValidationService : ITicketValidationService {
@@ -28,10 +29,17 @@ public class TicketValidationService : ITicketValidationService {
     public bool ValidDescription(string description) => description.Length > 1;
     public bool ValidAmount(int amount) => (amount > 0 && amount < 10000);
     #endregion
-    public bool isTicket(int ticketId) {
-        // TODO Change to sql, query with 0 records means ticket doesn't exist...? Might not need this anymore.
-        foreach(ReimburseTicket entry in _itr.GetTickets())
-            if(entry.id == ticketId) return true;
-        return false;
+
+    // TODO? Might not need this anymore.
+    // TODO Make this work with SQL
+    public bool isTicket(string ticketId) {
+        if(_itr.GetTicket(ticketId) is null) return false;
+        else return true;
+    }
+
+    public bool ValidStatusChange(int managerId, string ticketId) {
+        ReimburseTicket tmp = _itr.GetTicket(ticketId);
+        if(tmp.employeeID == managerId || tmp is null || tmp.status != 0) return false;
+        return true;
     }
 }

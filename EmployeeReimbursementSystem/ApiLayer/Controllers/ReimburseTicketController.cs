@@ -34,29 +34,15 @@ namespace ApiLayer.Controllers
         }
 
         [HttpPut("Approve")]
-        public ActionResult<ReimburseTicket> Approve(int managerId, int ticketId) {
+        public ActionResult<ReimburseTicket> Approve(int managerId, string ticketId) {
             ReimburseTicket approvedTicket = _its.ApproveTicket(managerId, ticketId);
             return Created("path/", approvedTicket);
         }
 
         [HttpPut("Deny")]
-        public ActionResult<ReimburseTicket> Deny(int managerId, int ticketId) {
+        public ActionResult<ReimburseTicket> Deny(int managerId, string ticketId) {
             ReimburseTicket deniedTicket = _its.DenyTicket(managerId, ticketId);
             return Created("path/", deniedTicket);
-        }
-
-        // TODO Put this in employee controller...
-        [HttpGet("EmployeeTickets")]
-        public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId) {
-            List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId);
-            return Created("path/", employeeTickets);
-        }
-
-        // TODO Put this in employee controller...
-        [HttpGet("EmployeeTicketsByStatus")]
-        public ActionResult<List<ReimburseTicket>> EmployeeTickets(int empId, int status) {
-            List<ReimburseTicket> employeeTickets = _its.GetEmployeeTickets(empId, status);
-            return Created("path/", employeeTickets);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace BusinessLayer
 
         public bool isPassword(int id, string oldPass) {
             Employee tmp = _ier.GetEmployee(id);
-            if(!((tmp.password).Equals(oldPass))) return false;
+            if(!((tmp.password!).Equals(oldPass))) return false;
             else return true;
         }
     }

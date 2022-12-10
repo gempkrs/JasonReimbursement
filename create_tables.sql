@@ -17,7 +17,7 @@ CREATE TABLE TicketStatus (
 );
 
 CREATE TABLE Ticket (
-    TicketId INT IDENTITY(1, 1) PRIMARY KEY,
+    TicketId VARCHAR(36) NOT NULL PRIMARY KEY,
     Reason NVARCHAR(25),
     Amount INT NOT NULL,
     Description NVARCHAR(250),

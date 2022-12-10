@@ -14,8 +14,8 @@ namespace ModelLayer;
 public class Employee {
     // Primary key
     public int id{get; set;}
-    public string email{get; set;} 
-    public string password{get; set;}
+    public string ?email{get; set;} 
+    public string ?password{get; set;}
 
     // 0 is default. 1 is manager.
     public int roleID{get; set;}
