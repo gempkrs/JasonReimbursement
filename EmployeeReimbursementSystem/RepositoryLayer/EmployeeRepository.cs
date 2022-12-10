@@ -23,7 +23,7 @@ namespace RepositoryLayer
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
         Employee UpdateEmployee(int id, int roleId);
-        Employee UpdateEmployee(int id, string email);
+        Employee UpdateEmployee(int id, string info);
         Employee PostEmployee(string email, string password);
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
@@ -48,7 +48,7 @@ namespace RepositoryLayer
             File.WriteAllText("EmployeeDatabase.json", serializedDb);
         }
 
-        #region // Put methods... update role, pass, or email.
+        #region // Put methods... update role, pass, or email
         public Employee UpdateEmployee(int id, int roleId) {
             string conString = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conString)) {
@@ -108,7 +108,7 @@ namespace RepositoryLayer
         }
         #endregion
 
-        #region // Post methods...
+        #region // Post methods... create an employee with or without role
         public Employee PostEmployee(string email, string password) {
             string conStirng = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conStirng)) {
@@ -154,7 +154,7 @@ namespace RepositoryLayer
         }
         #endregion
 
-        #region  // Get Methods: retrieve unique employee by email, id, or email & password
+        #region  // Get Methods... retrieve unique employee by email, id, or email & password
         public Employee GetEmployee(string email) {
             string conString = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conString)) {
