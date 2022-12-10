@@ -28,10 +28,10 @@ public class TicketValidationService : ITicketValidationService {
     public bool ValidDescription(string description) => description.Length > 1;
     public bool ValidAmount(int amount) => (amount > 0 && amount < 10000);
     #endregion
+
+    // TODO? Might not need this anymore.
+    // TODO Make this work with SQL
     public bool isTicket(int ticketId) {
-        // TODO Change to sql, query with 0 records means ticket doesn't exist...? Might not need this anymore.
-        foreach(ReimburseTicket entry in _itr.GetTickets())
-            if(entry.id == ticketId) return true;
         return false;
     }
 }

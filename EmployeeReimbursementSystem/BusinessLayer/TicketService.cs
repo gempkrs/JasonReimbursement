@@ -35,30 +35,36 @@ public class TicketService : ITicketService {
     }
     
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) {
-        if(!_ievs.isEmployee(empId) || !_itvs.ValidTicket(reason, amount, desc))
+        if(!_ievs.isEmployee(empId) || !_itvs.ValidTicket(reason, amount, desc)) {
+            Console.WriteLine("Invalid employeeId, or your ticket was invalid.");
             return null!;
+        }
 
         // TODO, TMP; until sql works... if we pass validation send data to repo layer for a query.
-        List<ReimburseTicket> ticketDb = _itr.GetTickets();
-        int ticketId = ticketDb.Count() + 1;
-        ReimburseTicket newTicket = new ReimburseTicket(ticketId, empId, reason, amount, desc);
-        ticketDb.Add(newTicket);
-        _itr.PostTickets(ticketDb);
+        // List<ReimburseTicket> ticketDb = _itr.GetTickets();
+        // int ticketId = ticketDb.Count() + 1;
+        // ReimburseTicket newTicket = new ReimburseTicket(ticketId, empId, reason, amount, desc);
+        // ticketDb.Add(newTicket);
+        // _itr.PostTickets(ticketDb);
 
-        return newTicket;
+        // return newTicket;
+        return _itr.PostTicket(Guid.NewGuid().ToString(), reason, amount, desc, empId);
     }
 
     public List<ReimburseTicket> GetPendingTickets(int empId) {
         // TODO, TMP; until sql works... in db, first check if employee is a manager; then query for tickets that are pending
-        if(!_ievs.isManager(empId)) return null!;
+        if(!_ievs.isManager(empId)) {
+            Console.WriteLine("Employee does not exist or have the righ permissions");
+            return null!;
+        } 
         
         // tmp... with sql we will get list from repo layer(?)
-        List<ReimburseTicket> pendingTickets = new List<ReimburseTicket>();
-        foreach(ReimburseTicket ticket in _itr.GetTickets()) {
-            if(ticket.status == 0) pendingTickets.Add(ticket);
-        }
+        // List<ReimburseTicket> pendingTickets = new List<ReimburseTicket>();
+        // foreach(ReimburseTicket ticket in _itr.GetTickets()) {
+        //     if(ticket.status == 0) pendingTickets.Add(ticket);
+        // }
 
-        return pendingTickets;
+        return null!;
     }
 
     public ReimburseTicket ApproveTicket(int empId, int ticketId) {
