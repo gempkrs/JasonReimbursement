@@ -16,7 +16,7 @@ public interface ITicketValidationService {
     public bool ValidAmount(int amount);
     public bool ValidDescription(string description);
     public bool ValidTicket(string reason, int amount, string description);
-    public bool isTicket(int ticketId);
+    public bool isTicket(string ticketId);
 }
 
 public class TicketValidationService : ITicketValidationService {
@@ -31,7 +31,7 @@ public class TicketValidationService : ITicketValidationService {
 
     // TODO? Might not need this anymore.
     // TODO Make this work with SQL
-    public bool isTicket(int ticketId) {
+    public bool isTicket(string ticketId) {
         return false;
     }
 }
