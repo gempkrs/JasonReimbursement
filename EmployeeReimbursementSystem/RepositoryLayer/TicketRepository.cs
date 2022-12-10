@@ -39,7 +39,26 @@ public class TicketRepository : ITicketRepository {
     }
 
     public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
-        return null!;
+        string conString = File.ReadAllText("../../ConString.txt");
+        using(SqlConnection connection = new SqlConnection(conString)) {
+            string updateTicketQuery = "UPDATE Ticket SET StatusId = @statusId WHERE TicketId = @ticketId";
+            SqlCommand command = new SqlCommand(updateTicketQuery, connection);
+            command.Parameters.AddWithValue("@statusId", statusId);
+            command.Parameters.AddWithValue("@ticketId", ticketId);
+            try {
+                connection.Open();
+                int rowsAffected = command.ExecuteNonQuery();
+                if(rowsAffected == 1) {
+                    Console.WriteLine("Update Success");
+                    return GetTicket(ticketId);
+                } else {
+                    return null!;
+                }
+            } catch(Exception e) {
+                Console.WriteLine("Update Failure\n" + e.Message);
+                return null!;
+            }
+        }
     }
 
     public ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId) {
@@ -59,13 +78,14 @@ public class TicketRepository : ITicketRepository {
                 if(rowsAffected == 1) {
                     Console.WriteLine("Post Success");
                     return GetTicket(guid); // TODO MAKE TICKET ID A KEY TO BE ABLE TO ACCESS?
+                } else {
+                    return null!;
                 }
             } catch(Exception e) {
                 Console.WriteLine("Insertion Failure\n" + e.Message);
+                return null!;
             }
         }
-        
-        return null!;
     }
 
     public ReimburseTicket GetTicket(string ticketId) {

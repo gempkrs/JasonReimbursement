@@ -61,7 +61,7 @@ public class TicketService : ITicketService {
     public ReimburseTicket ApproveTicket(int empId, string ticketId) {
         // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
         if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
-            Console.WriteLine("Invalid manager Id, manager is trying to edit their own ticket, or ticket doesn't exist");
+            Console.WriteLine("Invalid manager Id, manager is trying edit an invalid ticket, or ticket doesn't exist");
             return null!;
         } 
 
@@ -82,7 +82,7 @@ public class TicketService : ITicketService {
     public ReimburseTicket DenyTicket(int empId, string ticketId) {
         // TODO, Tmp; until sql works ... in db, check if employee is manager then check if ticket exists. Update ticket status
         if(!_ievs.isManager(empId) || !_itvs.ValidStatusChange(empId, ticketId)){
-            Console.WriteLine("Invalid manager Id, manager is trying to edit their own ticket, or ticket doesn't exist");
+            Console.WriteLine("Invalid manager Id, manager is trying to edit an invalid ticket, or ticket doesn't exist");
             return null!;
         } 
 

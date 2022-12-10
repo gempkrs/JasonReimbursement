@@ -39,7 +39,7 @@ public class TicketValidationService : ITicketValidationService {
 
     public bool ValidStatusChange(int managerId, string ticketId) {
         ReimburseTicket tmp = _itr.GetTicket(ticketId);
-        if(tmp.employeeID == managerId || tmp is null) return false;
+        if(tmp.employeeID == managerId || tmp is null || tmp.status != 0) return false;
         return true;
     }
 }
