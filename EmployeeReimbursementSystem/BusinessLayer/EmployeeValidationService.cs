@@ -24,6 +24,7 @@ namespace BusinessLayer
         // TODO?, IMPLEMENT: public bool EmailExists(string email);
         public bool isEmployee(int id);
         public bool isManager(int id);
+        public bool isPassword(int id, string oldPass);
     }
 
     public class EmployeeValidationService : IEmployeeValidationService {
@@ -61,6 +62,12 @@ namespace BusinessLayer
             // TODO Change to use sql, if the query returns 0 records, employee doesn't exist or has no permissions
             Employee tmp = _ier.GetEmployee(id);
             if(tmp is null || tmp.roleID == 0) return false;
+            else return true;
+        }
+
+        public bool isPassword(int id, string oldPass) {
+            Employee tmp = _ier.GetEmployee(id);
+            if(!((tmp.password).Equals(oldPass))) return false;
             else return true;
         }
     }

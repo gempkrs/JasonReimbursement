@@ -23,7 +23,7 @@ namespace RepositoryLayer
         List<Employee> GetEmployees();
         void PostEmployees(List<Employee> employeeDB);
         Employee UpdateEmployee(int id, int roleId);
-        Employee UpdateEmployee(int id, string newInfo);
+        Employee UpdateEmployee(int id, string email);
         Employee PostEmployee(string email, string password);
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
@@ -52,12 +52,21 @@ namespace RepositoryLayer
         public Employee UpdateEmployee(int id, int roleId) {
             string conString = File.ReadAllText("../../ConString.txt");
             using(SqlConnection connection = new SqlConnection(conString)) {
-                string updateEmployeeQuery = "";
+                string updateEmployeeQuery = "UPDATE Employee SET RoleId = @RoleId WHERE EmployeeId = @Id;";
                 SqlCommand command = new SqlCommand(updateEmployeeQuery, connection);
-                // ... 
+                command.Parameters.AddWithValue("@RoleId", roleId);
+                command.Parameters.AddWithValue("@Id", id); 
 
                 try {
                     connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if(rowsAffected == 1) {
+                        Console.WriteLine("Update Success");
+                        return GetEmployee(id);
+                    } else {
+                        Console.WriteLine("Update Failure");    
+                        return null!;
+                    } 
                 } catch(Exception e) {
                     Console.WriteLine("Update Failure\n" + e.Message);
                 }
@@ -67,13 +76,30 @@ namespace RepositoryLayer
 
         public Employee UpdateEmployee(int id, string info) {
             string conString = File.ReadAllText("../../ConString.txt");
+            string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
             using(SqlConnection connection = new SqlConnection(conString)) {
-                string updateEmployeeQuery = "";
+                string updateEmployeeQuery;
+                if(System.Text.RegularExpressions.Regex.Match(info, regex).Success) {
+                    // info is an email
+                    updateEmployeeQuery = "UPDATE Employee SET Email = @info WHERE EmployeeId = @Id";
+                } else {
+                    // info is a password
+                    updateEmployeeQuery = "UPDATE Employee SET Password = @info WHERE EmployeeId = @Id";
+                }
                 SqlCommand command = new SqlCommand(updateEmployeeQuery, connection);
-                // ... 
+                command.Parameters.AddWithValue("@info", info); 
+                command.Parameters.AddWithValue("@Id", id);
 
                 try {
                     connection.Open();
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if(rowsAffected == 1) {
+                        Console.WriteLine("Update Success");
+                        return GetEmployee(id);
+                    } else {
+                        Console.WriteLine("Update Failure");    
+                        return null!;
+                    }
                 } catch(Exception e) {
                     Console.WriteLine("Update Failure\n" + e.Message);
                 }

@@ -55,56 +55,49 @@ public class EmployeeService : IEmployeeService {
 
     #region // TODO, Refactor: Edit Employee Methods
     public Employee EditEmployee(int id, string oldPassword, string newPassword) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword)) return null!;
-
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == id && entry.password.Equals(oldPassword)) {
-                entry.password = newPassword;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
-        }
-        return null!;
-    }
-
-    public Employee EditEmployee(int id, string email) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(!_ievs.isEmployee(id) || !_ievs.ValidEmail(email)) return null!;
-
-        //tmp... update query using employee id...
-        List<Employee> employeeDb = _ier.GetEmployees();
-        foreach(Employee entry in employeeDb) {
-            if(entry.id == id) {
-                entry.email = email;
-                _ier.PostEmployees(employeeDb);
-                return entry;
-            }
-        }
-        return null!;
-    }
-    public Employee EditEmployee(int managerId, int employeeId, int roleId) {
-        // TODO, TMP; Do this until sql... in database, check if id exists, if it does update employee
-        if(managerId == employeeId) return null!;
-
-        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)){
-            Console.WriteLine("Manager exists, role invalid, or employee does not exist.");
+        if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword) || !_ievs.isPassword(id, oldPassword)) {
+            Console.WriteLine("Invalid employeeId, invalid new password, or passwords don't match.");
             return null!;
         }
-        return _ier.UpdateEmployee(employeeId, roleId);
-
         // //tmp... update query using employee id...
         // List<Employee> employeeDb = _ier.GetEmployees();
         // foreach(Employee entry in employeeDb) {
-        //     if(entry.id == employeeId) {
-        //         entry.roleID = roleId;
+        //     if(entry.id == id && entry.password.Equals(oldPassword)) {
+        //         entry.password = newPassword;
         //         _ier.PostEmployees(employeeDb);
         //         return entry;
         //     }
         // }
-        //return null!;
+        // return null!;
+        return _ier.UpdateEmployee(id, newPassword);
+    }
+
+    public Employee EditEmployee(int id, string email) {
+        if(!_ievs.isEmployee(id) || !_ievs.ValidEmail(email)) {
+            Console.WriteLine("Invalid employeeId, or invalid email");
+            return null!;
+        }
+        // //tmp... update query using employee id...
+        // List<Employee> employeeDb = _ier.GetEmployees();
+        // foreach(Employee entry in employeeDb) {
+        //     if(entry.id == id) {
+        //         entry.email = email;
+        //         _ier.PostEmployees(employeeDb);
+        //         return entry;
+        //     }
+        // }
+        // return null!;
+        return _ier.UpdateEmployee(id, email);
+    }
+    public Employee EditEmployee(int managerId, int employeeId, int roleId) {
+        if(managerId == employeeId) return null!;
+
+        if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)){
+            Console.WriteLine("Invalid managerId, roleId, or EmployeeId.");
+            return null!;
+        }
+        
+        return _ier.UpdateEmployee(employeeId, roleId);
     }
     #endregion
 }
