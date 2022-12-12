@@ -11,23 +11,25 @@ using System.Threading.Tasks;
 
 namespace ModelLayer;
 
-public class ReimburseTicket { // TODO Refactor to take in a datetime object
+public class ReimburseTicket {
     public string ?guid{get;set;}
     public int employeeID{get; set;}
     public string ?reason{get; set;}
     public int amount{get; set;}
     public string ?description{get; set;}
+    public DateTime timeMade{get; set;}
 
     // 0 is pending, 1 is approved, 2 is rejected
     public int status{get; set;}
 
     // Constructor to be used when an employee creates a ticket
-    public ReimburseTicket(string guid, string reason, int amount, string description, int statusId, int employeeID) {
+    public ReimburseTicket(string guid, string reason, int amount, string description, int statusId, DateTime timeMade, int employeeID) {
         this.guid = guid;
         this.reason = reason;
         this.amount = amount;
         this.description = description;
         this.status = statusId;
+        this.timeMade = timeMade;
         this.employeeID = employeeID;
     }
     public ReimburseTicket() {}

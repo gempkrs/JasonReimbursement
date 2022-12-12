@@ -14,9 +14,9 @@ namespace BusinessLayer;
 
 public interface ITicketService { 
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
-    public List<ReimburseTicket> GetPendingTickets(int empId);
-    public ReimburseTicket ApproveTicket(int empId, string tickId);
-    public ReimburseTicket DenyTicket(int empId, string ticketId);
+    public Queue<ReimburseTicket> GetPendingTickets(int managerId);
+    public ReimburseTicket ApproveTicket(int managerId, string tickId);
+    public ReimburseTicket DenyTicket(int managerId, string ticketId);
     public List<ReimburseTicket> GetEmployeeTickets(int empId);
     public List<ReimburseTicket> GetEmployeeTickets(int empId, int status);
 }
@@ -34,15 +34,17 @@ public class TicketService : ITicketService { // TODO Refactor to work with logg
         this._itvs = new TicketValidationService(this._itr);
     }
     
-    public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) { // TODO refactor to create ticket with datetime
+    public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) {
         if(!_ievs.isEmployee(empId) || !_itvs.ValidTicket(reason, amount, desc)) {
             Console.WriteLine("Invalid employeeId, or your ticket was invalid.");
             return null!;
         }
-        return _itr.PostTicket(Guid.NewGuid().ToString(), reason, amount, desc, empId);
+        string guid = Guid.NewGuid().ToString();
+        DateTime timeMade = DateTime.Now;
+        return _itr.PostTicket(guid, reason, amount, desc, timeMade, empId);
     }
 
-    public List<ReimburseTicket> GetPendingTickets(int managerId) { // TODO Refactor to return a queue, ordered by the time the tickets were submitted
+    public Queue<ReimburseTicket> GetPendingTickets(int managerId) {
         if(!_ievs.isManager(managerId)) {
             Console.WriteLine("Employee does not exist or have the righ permissions");
             return null!;
