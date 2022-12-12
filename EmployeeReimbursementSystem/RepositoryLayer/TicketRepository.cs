@@ -15,12 +15,12 @@ using ModelLayer;
 namespace RepositoryLayer;
 
 public interface ITicketRepository {
-    ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId);
+    ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId);
     ReimburseTicket GetTicket(string ticketId);
     ReimburseTicket UpdateTicket(string ticketId, int statusId);
     List<ReimburseTicket> GetTickets(int employeeId);
     List<ReimburseTicket> GetTickets(int employeeId, int statusId);
-    List<ReimburseTicket> GetPending(int managerId);
+    Queue<ReimburseTicket> GetPending(int managerId);
 }
 
 public class TicketRepository : ITicketRepository { // TODO Refactor to work with logger
@@ -47,15 +47,16 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
         }
     }
 
-    public ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId) { // TODO create ticket with datetime
+    public ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
-            string insertTicketQuery = "INSERT INTO Ticket (TicketId, Reason, Amount, Description, StatusId, EmployeeId) VALUES (@guid, @r, @a, @d, 0, @eId);";
+            string insertTicketQuery = "INSERT INTO Ticket (TicketId, Reason, Amount, Description, StatusId, RequestDate, EmployeeId) VALUES (@guid, @r, @a, @d, 0, @t, @eId);";
             SqlCommand command = new SqlCommand(insertTicketQuery, connection);
             command.Parameters.AddWithValue("@guid", guid);
             command.Parameters.AddWithValue("@r", r);
             command.Parameters.AddWithValue("@a", a);
             command.Parameters.AddWithValue("@d", d);
+            command.Parameters.AddWithValue("@t", t);
             command.Parameters.AddWithValue("@eId", eId);
 
             try {
@@ -74,7 +75,7 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
         }
     }
 
-    public ReimburseTicket GetTicket(string ticketId) { // TODO return ticket with datetime
+    public ReimburseTicket GetTicket(string ticketId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
             string queryTicketById = "SELECT * FROM Ticket WHERE TicketId = @ticketId;";
@@ -93,7 +94,8 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                             (int) reader[2],
                             (string) reader[3],
                             (int) reader[4],
-                            (int) reader[5]
+                            (DateTime) reader[5],
+                            (int) reader[6]
                         );
                     }
                 }
@@ -104,7 +106,7 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
         }
     }
 
-    public List<ReimburseTicket> GetTickets(int employeeId) { // TODO return ticket with datetime
+    public List<ReimburseTicket> GetTickets(int employeeId) {
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -124,7 +126,8 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                             (int) reader[2],
                             (string) reader[3],
                             (int) reader[4],
-                            (int) reader[5]
+                            (DateTime) reader[5],
+                            (int) reader[6]
                         );
                         employeeTickets.Add(newTicket);
                     }
@@ -138,7 +141,7 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
         }
     }
 
-    public List<ReimburseTicket> GetTickets(int employeeId, int statusId) { // TODO return ticket with datetime
+    public List<ReimburseTicket> GetTickets(int employeeId, int statusId) {
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -160,7 +163,8 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                                 (int) reader[2],
                                 (string) reader[3],
                                 (int) reader[4],
-                                (int) reader[5]
+                                (DateTime) reader[5],
+                                (int) reader[6]
                             );
                             employeeTickets.Add(newTicket);
                         }
@@ -175,11 +179,11 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
         }
     }
 
-    public List<ReimburseTicket> GetPending(int managerId) { // TODO Refactor to return a queue, ordered by the time the tickets were submitted
+    public Queue<ReimburseTicket> GetPending(int managerId) {
                 string conString = File.ReadAllText("../../ConString.txt");
-        List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
+        Queue<ReimburseTicket> employeeTickets = new Queue<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
-            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE StatusId = @statusId;";
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE StatusId = @statusId ORDER BY RequestDate;";
             SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
             command.Parameters.AddWithValue("@statusId", 0);
 
@@ -196,9 +200,10 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                                 (int) reader[2],
                                 (string) reader[3],
                                 (int) reader[4],
-                                (int) reader[5]
+                                (DateTime) reader[5],
+                                (int) reader[6]
                             );
-                            employeeTickets.Add(newTicket);
+                            employeeTickets.Enqueue(newTicket);
                         }
                     }
                     Console.WriteLine("GET Success");

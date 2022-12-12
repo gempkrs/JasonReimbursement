@@ -12,81 +12,105 @@ using System.Threading.Tasks;
 using Xunit;
 
 using BusinessLayer;
-using RepositoryLayer;
-using ModelLayer;
-using System.Net.Mail;
 
 namespace Tests.Business
 {
-    public class XUnitEmployeeValidationService
-    {
-    // TODO Refactor to work with new system. Use mocking
-    //     [Theory]
-    //     [InlineData("pass@email.com")] // True
-    //     [InlineData("UniqueEmail@email.com")] // True
-    //     [InlineData("testemail.com")]  // False, wrong format
-    //     [InlineData("test")]           // False, wrong format
-    //     [InlineData("newTestEmail@email")] // False, wrong format
-    //     public void ValidateEmailFormat(string email) {
-    //         // Arrange
-    //         IEmployeeValidationService _ievs = new EmployeeValidationService(new EmployeeRepository());
-            
-    //         // Act
-    //         bool validEmail = _ievs.ValidEmail(email);
-    //         bool check = MailAddress.TryCreate(email, out MailAddress ?result);
-            
-    //         // Assert
-    //         if(check == true)
-    //             Assert.True(validEmail);
-    //         else
-    //             Assert.False(validEmail);
-    //     }
+    public class XUnitEmployeeValidationService {
+        [Theory]
+        [InlineData("pass@email.com")]
+        [InlineData("fail@email")]
+        [InlineData("failemail.com")]
+        [InlineData("@email.com")]
+        public void ValidEmailFormatTest(string email) {
+            string[] s = {"fail@email", "failemail.com", "@email.com"};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
 
-    //     [Theory]
-    //     [InlineData("test@email.com")] // Exists
-    //     [InlineData("DoesntExist@email.com")] // Unique
-    //     public void UnqiueEmailValidation(string email) {
-    //         // Arrange
-    //         IEmployeeValidationService _ievs = new EmployeeValidationService(new EmployeeRepository());
-    //         bool emailExists = false;
-    //         List<string> existingTestEmails = new List<string> {
-    //             "test@email.com",
-    //         };
+            bool result = ivs.ValidEmail(email);
 
-    //         // Act
-    //         foreach(string entry in existingTestEmails) {
-    //             if(entry.Equals(email)) emailExists = true;
-    //         }
+            if(Array.IndexOf(s, email) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
 
-    //         // Assert, Email already exists
-    //         if(emailExists) Assert.False(_ievs.ValidEmail(email));
-    //     }
+        [Theory]
+        [InlineData("GoodPass")]
+        [InlineData("Good123")]
+        [InlineData("Fail")]
+        [InlineData("@NotOkay")]
+        public void ValidPasswordFormatTest(string pass) {
+            string[] s = {"Fail", "@NotOkay"};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
 
-    //     [Theory]
-    //     [InlineData("123Pass")] // Valid
-    //     [InlineData("123pass")] // Valid
-    //     [InlineData("nope")] // Invalid
-    //     [InlineData("$NOtValid")] // Invalid
-    //     public void PasswordValidation(string password) {
-    //         IEmployeeValidationService _ievs = new EmployeeValidationService(new EmployeeRepository());
+            bool result = ivs.ValidPassword(pass);
 
-    //         if(password.Length < 6) Assert.False(_ievs.ValidPassword(password));
-    //         else Assert.True(_ievs.ValidPassword(password));
-    //     }
+            if(Array.IndexOf(s, pass) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
 
-    //     [Theory]
-    //     [InlineData(0)] // True
-    //     [InlineData(1)] // True
-    //     [InlineData(2)] // False
-    //     [InlineData(-1)] // False
-    //     public void RoleValidation(int roleId) {
-    //         // Arrange
-    //         IEmployeeValidationService _ievs = new EmployeeValidationService(new EmployeeRepository());
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(-1)]
+        [InlineData(2)]
+        public void ValidRoleTest(int roleId) {
+            int[] i = {-1, 2};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
 
-    //         // Assert
-    //         if(_ievs.ValidRole(roleId)) 
-    //             Assert.True(roleId == 0 || roleId == 1);
-    //         else Assert.False(_ievs.ValidRole(roleId));
-    //     }
+            bool result = ivs.ValidRole(roleId);
+
+            if(Array.IndexOf(i, roleId) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(5)]
+        public void IsEmployeeTest(int id) {
+            int[] i = {4, 5};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
+
+            bool result = ivs.isEmployee(id);
+
+            if(Array.IndexOf(i, id) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(3)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(4)]
+        public void IsManagerTest(int id) {
+            int[] i = {1, 2, 4};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
+
+            bool result = ivs.isManager(id);
+
+            if(Array.IndexOf(i, id) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
+
+        [Theory]
+        [InlineData(1, "123Pass")]
+        [InlineData(3, "123Pass")]
+        [InlineData(2, "321Pass")]
+        [InlineData(1, "WrongOne")]
+        [InlineData(1, "WrongAgain")]
+        public void IsPasswordTest(int id, string pass) {
+            string[] s = {"WrongOne", "WrongAgain"};
+            var mer = new MockEmployeeRepository();
+            var ivs = new EmployeeValidationService(mer);
+
+            bool result = ivs.isPassword(id, pass);
+
+            if(Array.IndexOf(s, pass) > -1) Assert.False(result);
+            else Assert.True(result);
+        }
     }
 }

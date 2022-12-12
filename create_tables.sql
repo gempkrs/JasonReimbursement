@@ -22,6 +22,7 @@ CREATE TABLE Ticket (
     Amount INT NOT NULL,
     Description NVARCHAR(250),
     StatusId INT NOT NULL,
+	RequestDate DATETIME,
     EmployeeId INT NOT NULL
 );
 
