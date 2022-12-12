@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace RepositoryLayer
 {
-    public interface ILoggerEmployeeRepository {
+    public interface ILoggerEmployeeRepository { // TODO
         
     }
 
-    public class LoggerEmployeeRepository
-    {
+    public class LoggerEmployeeRepository {
         
     }
 }

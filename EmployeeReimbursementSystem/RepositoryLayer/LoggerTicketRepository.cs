@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RepositoryLayer
 {
-    public interface ILoggerTicketRepository {
+    public interface ILoggerTicketRepository { // TODO
         
     }
 

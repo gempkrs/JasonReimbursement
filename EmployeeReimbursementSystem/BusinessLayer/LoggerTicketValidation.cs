@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer
 {
-    public interface ILoggerTicketValidation {
+    public interface ILoggerTicketValidation {// TODO
         
     }
 
