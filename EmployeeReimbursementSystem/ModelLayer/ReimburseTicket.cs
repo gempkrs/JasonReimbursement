@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ModelLayer;
 
-public class ReimburseTicket {
+public class ReimburseTicket { // TODO Refactor to take in a datetime object
     public string ?guid{get;set;}
     public int employeeID{get; set;}
     public string ?reason{get; set;}

@@ -14,9 +14,9 @@ using Xunit;
 using ModelLayer;
 
 namespace Tests.Model;
-// TODO Refactor with new constructor
+
 public class XUnitReimbursementTicketModel {
-    
+    // TODO Refactor to work with new system.
     /* CONSTRUCTOR TEST, ADDING TICKET TO EMPTY DATABASE
      * Tests if we successfully added a ticket object to an empty list of 
      * tickets. Simulates expected input from the user and expected logic from

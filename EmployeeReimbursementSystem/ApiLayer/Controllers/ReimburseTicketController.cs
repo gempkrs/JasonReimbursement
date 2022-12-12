@@ -28,7 +28,7 @@ namespace ApiLayer.Controllers
         }
 
         [HttpGet("PendingTickets")]
-        public ActionResult<List<ReimburseTicket>> PendingTickets(int managerId) {
+        public ActionResult<List<ReimburseTicket>> PendingTickets(int managerId) { // TODO Refactor to return a queue, ordered by the time the tickets were submitted
             List<ReimburseTicket> pendingTickets = _its.GetPendingTickets(managerId);
             return Created("path/", pendingTickets);
         }
