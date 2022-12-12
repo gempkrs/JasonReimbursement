@@ -1,12 +1,8 @@
-/*
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// Import our necessary layers
 using ModelLayer;
 using RepositoryLayer;
 
@@ -20,7 +16,7 @@ public interface ITicketValidationService {
     public bool ValidStatusChange(int managerId, string ticketId);
 }
 
-public class TicketValidationService : ITicketValidationService { // TODO Refactor to work with logger
+public class TicketValidationService : ITicketValidationService {
     private readonly ITicketRepository _itr;
     public TicketValidationService(ITicketRepository itr) => this._itr = itr;
     #region // Ticket Input Validation

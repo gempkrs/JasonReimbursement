@@ -1,10 +1,3 @@
-/* JASON TEJADA    PROJECT 1 API LAYER CLASS    REVATURE
- * Desc:
- *          This class is the driver for our project. We will need to
- *          add our services to various scopes in this file.
- */
-
-// Importing necessary layers
 using BusinessLayer;
 using RepositoryLayer;
 
@@ -28,6 +21,8 @@ public class Program
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+        builder.Services.AddSingleton<ILoggerEmployeeRepository, LoggerEmployeeRepository>();
+        builder.Services.AddSingleton<ILoggerTicketRepository, LoggerTicketRepository>();
 
         var app = builder.Build();
 

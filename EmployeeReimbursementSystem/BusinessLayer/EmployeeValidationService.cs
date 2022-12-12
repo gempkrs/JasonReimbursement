@@ -1,17 +1,11 @@
-/*
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
-// Importing necessary layers
 using ModelLayer;
 using RepositoryLayer;
-
-// Regex library to enforce password and email constraints
-using System.Text.RegularExpressions;
 
 namespace BusinessLayer
 {
@@ -26,7 +20,7 @@ namespace BusinessLayer
         public bool isPassword(int id, string oldPass);
     }
 
-    public class EmployeeValidationService : IEmployeeValidationService { // TODO Refactor to work with logger
+    public class EmployeeValidationService : IEmployeeValidationService {
         private readonly IEmployeeRepository _ier;
         public EmployeeValidationService(IEmployeeRepository ier) => this._ier = ier;
 
@@ -34,15 +28,6 @@ namespace BusinessLayer
         public bool ValidRegistration(string email, string pass, int roleId) => ValidEmail(email) && ValidPassword(pass) && ValidRole(roleId);
 
         #region // Functions for validating registration
-        // Validate input format and ensure the email exists.
-        /*
-            Using the unique constraint for the email column gives us an error when we try to insert
-            with the same email. In the repo layer, catch this error and return null. Here, simply make
-            sure the user doesn't enter a trash email.
-            Using the foreign key constraint for the RoleId column gives us an error when we try to insert
-            using an invalid role id. We do not need the ValidRole function anymore.
-            May not need the isEmployee or the isManager function anymore...
-        */
         public bool ValidEmail(string email) {
             string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
             return Regex.Match(email, regex).Success;

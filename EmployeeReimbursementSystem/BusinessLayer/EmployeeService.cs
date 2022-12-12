@@ -1,22 +1,13 @@
-/* JASON TEJADA    PROJECT 1 BUSINESS LAYER CLASS    REVATURE 
- * Desc:
- *          This class defines the business logic for our employee
- *          requirements for the ERS. Implements main functionality
- *          for employees.
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-//Import our necessary layers
 using ModelLayer;
 using RepositoryLayer;
 
 namespace BusinessLayer;
 
-// Interface to be used for dependency injection in the api layer
 public interface IEmployeeService {
     public Employee PostEmployee(string email, string password);
     public Employee PostEmployee(string email, string password, int roleid);
@@ -27,7 +18,7 @@ public interface IEmployeeService {
     public Employee EditEmployee(int managerId, int employeeId, int roleId);
 }
 
-public class EmployeeService : IEmployeeService { // TODO Refactor to work with logger
+public class EmployeeService : IEmployeeService {
 
     private readonly IEmployeeRepository _ier;
     private IEmployeeValidationService _ievs;
@@ -45,7 +36,6 @@ public class EmployeeService : IEmployeeService { // TODO Refactor to work with 
         return _ier.PostEmployee(email, password);
     }
 
-    // Overloaded method for registering a manager/employee with a role
     public Employee PostEmployee(string email, string password, int roleid) {
         if(!_ievs.ValidRegistration(email, password, roleid)) 
             return null!;

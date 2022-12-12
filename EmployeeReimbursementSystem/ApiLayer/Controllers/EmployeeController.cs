@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-// Importing the necessary layers
 using ModelLayer;
 using BusinessLayer;
 
