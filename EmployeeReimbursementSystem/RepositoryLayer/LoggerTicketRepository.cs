@@ -5,17 +5,14 @@ using System.Threading.Tasks;
 
 namespace RepositoryLayer
 {
-    public interface ILoggerTicketRepository { // TODO
-    /*
-    ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId);
-    ReimburseTicket GetTicket(string ticketId);
-    ReimburseTicket UpdateTicket(string ticketId, int statusId);
-    List<ReimburseTicket> GetTickets(int employeeId);
-    List<ReimburseTicket> GetTickets(int employeeId, int statusId);
-    Queue<ReimburseTicket> GetPending(int managerId);
-    */
+    public interface ILoggerTicketRepository {
+        // Logger for GET requests
         void LogTicketGet(bool success, object o);
+        
+        // Logger for POST requests
         void LogTicketPost(bool success, object o);
+        
+        // Logger for PUT requests
         void LogTicketPut(bool success, object o);
     }
 

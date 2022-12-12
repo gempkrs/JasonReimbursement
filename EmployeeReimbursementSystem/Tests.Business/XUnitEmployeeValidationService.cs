@@ -1,10 +1,3 @@
-/* JASON TEJADA    PROJECT 1 TESTING LAYER FOR BUSINESS    REVATURE
- * Desc:
- *          Unit tests for ValidationService class. Tests if the validation
- *          class works as expected. More specifically, tests if the various
- *          methods in the ValidateService class correctly validates employee 
- *          & ticket operations.
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;

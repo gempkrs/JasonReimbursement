@@ -1,6 +1,3 @@
-/*
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +5,9 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Data.SqlClient;
 
-// Importing necessary layers
 using ModelLayer;
 
-
 namespace RepositoryLayer;
-
 public interface ITicketRepository {
     ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId);
     ReimburseTicket GetTicket(string ticketId);
@@ -23,7 +17,7 @@ public interface ITicketRepository {
     Queue<ReimburseTicket> GetPending(int managerId);
 }
 
-public class TicketRepository : ITicketRepository { // TODO Refactor to work with logger
+public class TicketRepository : ITicketRepository {
     // Injecting logger
     private readonly ILoggerTicketRepository _loggerTR;
     public TicketRepository(ILoggerTicketRepository logger) => this._loggerTR = logger;

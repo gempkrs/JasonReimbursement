@@ -1,12 +1,8 @@
-/*
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// Import necessary layers
 using RepositoryLayer;
 using ModelLayer;
 
