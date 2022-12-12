@@ -31,14 +31,20 @@ public class EmployeeService : IEmployeeService {
 
     #region //Registration methods
     public Employee PostEmployee(string email, string password) { 
-        if(!_ievs.ValidRegistration(email, password)) 
+        if(!_ievs.ValidRegistration(email, password)) {
+            Console.WriteLine("Invalid email or password");
             return null!;
+        }
+
         return _ier.PostEmployee(email, password);
     }
 
     public Employee PostEmployee(string email, string password, int roleid) {
-        if(!_ievs.ValidRegistration(email, password, roleid)) 
+        if(!_ievs.ValidRegistration(email, password, roleid)) {
+            Console.WriteLine("Invalid email, password, or roleId");
             return null!;
+        }
+        
         return _ier.PostEmployee(email, password, roleid);
     }
     #endregion
