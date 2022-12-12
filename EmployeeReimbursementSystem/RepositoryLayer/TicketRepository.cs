@@ -64,7 +64,6 @@ public class TicketRepository : ITicketRepository {
                 connection.Open();
                 int rowsAffected = command.ExecuteNonQuery();
                 if(rowsAffected == 1) {
-                    Console.WriteLine("Post Success");
                     _loggerTR.LogTicketPost(true, guid);
                     return GetTicket(guid);
                 } else {
