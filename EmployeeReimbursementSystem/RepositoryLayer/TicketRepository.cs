@@ -24,6 +24,11 @@ public interface ITicketRepository {
 }
 
 public class TicketRepository : ITicketRepository { // TODO Refactor to work with logger
+    // Injecting logger
+    private readonly ILoggerTicketRepository _loggerTR;
+    public TicketRepository(ILoggerTicketRepository logger) => this._loggerTR = logger;
+    
+    
     public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -35,13 +40,15 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 connection.Open();
                 int rowsAffected = command.ExecuteNonQuery();
                 if(rowsAffected == 1) {
-                    Console.WriteLine("Update Success");
+                    _loggerTR.LogTicketPut(true, ticketId);
                     return GetTicket(ticketId);
                 } else {
+                    _loggerTR.LogTicketPut(false, ticketId);
                     return null!;
                 }
             } catch(Exception e) {
-                Console.WriteLine("Update Failure\n" + e.Message);
+                _loggerTR.LogTicketPut(false, ticketId);
+                Console.WriteLine(e.Message);
                 return null!;
             }
         }
@@ -64,12 +71,15 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 int rowsAffected = command.ExecuteNonQuery();
                 if(rowsAffected == 1) {
                     Console.WriteLine("Post Success");
+                    _loggerTR.LogTicketPost(true, guid);
                     return GetTicket(guid);
                 } else {
+                    _loggerTR.LogTicketPost(false, guid);
                     return null!;
                 }
             } catch(Exception e) {
-                Console.WriteLine("Insertion Failure\n" + e.Message);
+                _loggerTR.LogTicketPost(false, guid);
+                Console.WriteLine(e.Message);
                 return null!;
             }
         }
@@ -85,9 +95,13 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 connection.Open();
 
                 using(SqlDataReader reader = command.ExecuteReader()) {
-                    if(!reader.HasRows) return null!;
+                    if(!reader.HasRows) {
+                        _loggerTR.LogTicketGet(false, ticketId);
+                        return null!;
+                    } 
                     else {
                         reader.Read();
+                        _loggerTR.LogTicketGet(true, ticketId);
                         return new ReimburseTicket(
                             (string) reader[0],
                             (string) reader[1],
@@ -100,6 +114,7 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                     }
                 }
             } catch(Exception e) {
+                _loggerTR.LogTicketGet(false, ticketId);
                 Console.WriteLine(e.Message);
                 return null!;
             }
@@ -118,7 +133,10 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 connection.Open();
 
                 using(SqlDataReader reader = command.ExecuteReader()) {
-                    if(!reader.HasRows) return null!;
+                    if(!reader.HasRows) {
+                        _loggerTR.LogTicketGet(false, employeeId);
+                        return null!;
+                    } 
                     while(reader.Read()) {
                         ReimburseTicket newTicket = new ReimburseTicket(
                             (string) reader[0],
@@ -131,11 +149,12 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                         );
                         employeeTickets.Add(newTicket);
                     }
-                    Console.WriteLine("GET Success");
+                    _loggerTR.LogTicketGet(true, employeeId);
                     return employeeTickets;
                 }
             } catch(Exception e) {
-                Console.WriteLine("GET error\n" + e.Message);
+                _loggerTR.LogTicketGet(false, employeeId);
+                Console.WriteLine(e.Message);
                 return null!;
             }
         }
@@ -154,7 +173,10 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 connection.Open();
 
                 using(SqlDataReader reader = command.ExecuteReader()) {
-                    if(!reader.HasRows) return null!;
+                    if(!reader.HasRows) {
+                        _loggerTR.LogTicketGet(false, employeeId);
+                        return null!;
+                    } 
                     while(reader.Read()) {
                         if((int)reader[4] == statusId) {
                             ReimburseTicket newTicket = new ReimburseTicket(
@@ -169,11 +191,12 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                             employeeTickets.Add(newTicket);
                         }
                     }
-                    Console.WriteLine("GET Success");
+                    _loggerTR.LogTicketGet(true, employeeId);
                     return employeeTickets;
                 }
             } catch(Exception e) {
-                Console.WriteLine("GET error\n" + e.Message);
+                _loggerTR.LogTicketGet(false, employeeId);
+                Console.WriteLine(e.Message);
                 return null!;
             }
         }
@@ -191,7 +214,10 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                 connection.Open();
 
                 using(SqlDataReader reader = command.ExecuteReader()) {
-                    if(!reader.HasRows) return null!;
+                    if(!reader.HasRows) {
+                        _loggerTR.LogTicketGet(false, managerId);
+                        return null!;
+                    } 
                     while(reader.Read()) {
                         if((int)reader[4] == 0) {
                             ReimburseTicket newTicket = new ReimburseTicket(
@@ -206,11 +232,12 @@ public class TicketRepository : ITicketRepository { // TODO Refactor to work wit
                             employeeTickets.Enqueue(newTicket);
                         }
                     }
-                    Console.WriteLine("GET Success");
+                    _loggerTR.LogTicketGet(true, managerId);
                     return employeeTickets;
                 }
             } catch(Exception e) {
-                Console.WriteLine("GET error\n" + e.Message);
+                _loggerTR.LogTicketGet(false, managerId);
+                Console.WriteLine(e.Message);
                 return null!;
             }
         }
