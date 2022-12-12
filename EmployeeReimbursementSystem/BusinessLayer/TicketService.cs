@@ -1,12 +1,8 @@
-/*
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// Import our necessary layers
 using ModelLayer;
 using RepositoryLayer;
 
@@ -21,7 +17,7 @@ public interface ITicketService {
     public List<ReimburseTicket> GetEmployeeTickets(int empId, int status);
 }
 
-public class TicketService : ITicketService { // TODO Refactor to work with logger
+public class TicketService : ITicketService {
     // Dependency Injection
     private readonly ITicketRepository _itr;
     private readonly IEmployeeRepository _ier;
