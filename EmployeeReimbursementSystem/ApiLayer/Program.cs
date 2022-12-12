@@ -28,6 +28,7 @@ public class Program
         builder.Services.AddScoped<ITicketService, TicketService>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+        builder.Services.AddSingleton<ILoggerEmployeeRepository, LoggerEmployeeRepository>();
 
         var app = builder.Build();
 

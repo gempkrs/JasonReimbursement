@@ -27,7 +27,11 @@ namespace RepositoryLayer
         Employee LoginEmployee(string email, string password);
     }
 
-    public class EmployeeRepository : IEmployeeRepository { // TODO Refactor to work with logger
+    public class EmployeeRepository : IEmployeeRepository {
+        // Giving this class a logger
+        private readonly ILoggerEmployeeRepository _loggerER;
+        public EmployeeRepository(ILoggerEmployeeRepository logger) => this._loggerER = logger;
+
         #region // Put methods... update role, pass, or email
         public Employee UpdateEmployee(int id, int roleId) {
             string conString = File.ReadAllText("../../ConString.txt");
@@ -41,17 +45,18 @@ namespace RepositoryLayer
                     connection.Open();
                     int rowsAffected = command.ExecuteNonQuery();
                     if(rowsAffected == 1) {
-                        Console.WriteLine("Update Success");
+                        _loggerER.LogEmployeePut(true, roleId);
                         return GetEmployee(id);
-                    } else {
-                        Console.WriteLine("Update Failure");    
+                    } else {    
+                        _loggerER.LogEmployeePut(false, roleId);
                         return null!;
                     } 
                 } catch(Exception e) {
-                    Console.WriteLine("Update Failure\n" + e.Message);
+                    _loggerER.LogEmployeePut(false, roleId);
+                    Console.WriteLine(e.Message);
+                    return null!;
                 }
-            }
-            return null!;
+            } 
         }
 
         public Employee UpdateEmployee(int id, string info) {
@@ -74,17 +79,18 @@ namespace RepositoryLayer
                     connection.Open();
                     int rowsAffected = command.ExecuteNonQuery();
                     if(rowsAffected == 1) {
-                        Console.WriteLine("Update Success");
+                        _loggerER.LogEmployeePut(true, info);
                         return GetEmployee(id);
                     } else {
-                        Console.WriteLine("Update Failure");    
+                        _loggerER.LogEmployeePut(false, info);
                         return null!;
                     }
                 } catch(Exception e) {
-                    Console.WriteLine("Update Failure\n" + e.Message);
+                    _loggerER.LogEmployeePut(false, info);
+                    Console.WriteLine(e.Message);
+                    return null!;
                 }
             }
-            return null!;
         }
         #endregion
 
@@ -101,11 +107,15 @@ namespace RepositoryLayer
                     connection.Open();
                     int rowsAffected = command.ExecuteNonQuery();
                     if(rowsAffected == 1) {
-                        Console.WriteLine("Post Success");
+                        _loggerER.LogEmployeePost(true);
                         return GetEmployee(email);
-                    } else return null!;
+                    } else {
+                        _loggerER.LogEmployeePost(false);
+                        return null!;
+                    }
                 } catch (Exception e) {
-                    Console.WriteLine("Insertion Failure\n" + e.Message);
+                    _loggerER.LogEmployeePost(false);
+                    Console.WriteLine(e.Message);
                     return null!;
                 }
             }
@@ -123,11 +133,15 @@ namespace RepositoryLayer
                     connection.Open();
                     int rowsAffected = command.ExecuteNonQuery();
                     if(rowsAffected == 1) {
-                        Console.WriteLine("Post Success");
+                        _loggerER.LogEmployeePost(true);
                         return GetEmployee(email);
-                    } else return null!;
+                    } else {
+                        _loggerER.LogEmployeePost(false);
+                        return null!;
+                    }
                 } catch (Exception e) {
-                    Console.WriteLine("Insertion Failure\n" + e.Message);
+                    _loggerER.LogEmployeePost(false);
+                    Console.WriteLine(e.Message);
                     return null!;
                 }
             }
@@ -145,9 +159,13 @@ namespace RepositoryLayer
                     connection.Open();
                     
                     using(SqlDataReader reader = command.ExecuteReader()) {
-                        if(!reader.HasRows) return null!;
+                        if(!reader.HasRows) {
+                            _loggerER.LogEmployeeGet(false, email);
+                            return null!;
+                        } 
                         else {
                             reader.Read();
+                            _loggerER.LogEmployeeGet(true, email);
                             return new Employee(
                                 (int)reader[0], 
                                 (string)reader[1], 
@@ -157,6 +175,7 @@ namespace RepositoryLayer
                         }
                     }
                 } catch(Exception e) {
+                    _loggerER.LogEmployeeGet(false, email);
                     Console.WriteLine(e.Message);
                     return null!;
                 }
@@ -173,9 +192,13 @@ namespace RepositoryLayer
                     connection.Open();
                     
                     using(SqlDataReader reader = command.ExecuteReader()) {
-                        if(!reader.HasRows) return null!;
+                        if(!reader.HasRows) {
+                            _loggerER.LogEmployeeGet(false, id);
+                            return null!;
+                        } 
                         else {
                             reader.Read();
+                            _loggerER.LogEmployeeGet(true, id);
                             return new Employee(
                                 (int)reader[0], 
                                 (string)reader[1], 
@@ -185,6 +208,7 @@ namespace RepositoryLayer
                         }
                     }
                 } catch(Exception e) {
+                    _loggerER.LogEmployeeGet(false, id);
                     Console.WriteLine(e.Message);
                     return null!;
                 }
@@ -202,9 +226,13 @@ namespace RepositoryLayer
                     connection.Open();
                     
                     using(SqlDataReader reader = command.ExecuteReader()) {
-                        if(!reader.HasRows) return null!;
+                        if(!reader.HasRows) {
+                            _loggerER.LogLoginRequest(false);
+                            return null!;
+                        }
                         else {
                             reader.Read();
+                            _loggerER.LogLoginRequest(true);
                             return new Employee(
                                 (int)reader[0], 
                                 (string)reader[1], 
@@ -214,6 +242,7 @@ namespace RepositoryLayer
                         }
                     }
                 } catch(Exception e) {
+                    _loggerER.LogLoginRequest(false);
                     Console.WriteLine(e.Message);
                     return null!;
                 }
