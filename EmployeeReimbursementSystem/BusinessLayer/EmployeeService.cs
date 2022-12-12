@@ -68,7 +68,10 @@ public class EmployeeService : IEmployeeService {
         return _ier.UpdateEmployee(id, email);
     }
     public Employee EditEmployee(int managerId, int employeeId, int roleId) {
-        if(managerId == employeeId) return null!;
+        if(managerId == employeeId) {
+            Console.WriteLine("Invalid target id.");
+            return null!;
+        } 
 
         if(!_ievs.isManager(managerId) || !_ievs.ValidRole(roleId) || !_ievs.isEmployee(employeeId)){
             Console.WriteLine("Invalid managerId, roleId, or EmployeeId.");
