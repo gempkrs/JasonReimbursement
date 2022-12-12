@@ -13,13 +13,6 @@ namespace Tests.Business
 {
     public class XUnitTicketValidationService
     {
-        /*
-        public bool ValidReason(string reason);
-        public bool ValidAmount(int amount);
-        public bool ValidDescription(string description);
-        public bool isTicket(string ticketId);
-        public bool ValidStatusChange(int managerId, string ticketId);
-        */
         [Theory]
         [InlineData("")]
         [InlineData("Valid")]
