@@ -10,18 +10,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Text.Json;
 using Microsoft.Data.SqlClient;
 
 // Importing necessary layers
 using ModelLayer;
 
-// TODO Refactor
 namespace RepositoryLayer
 {
     public interface IEmployeeRepository {
-        List<Employee> GetEmployees();
-        void PostEmployees(List<Employee> employeeDB);
         Employee UpdateEmployee(int id, int roleId);
         Employee UpdateEmployee(int id, string info);
         Employee PostEmployee(string email, string password);
@@ -31,23 +27,7 @@ namespace RepositoryLayer
         Employee LoginEmployee(string email, string password);
     }
 
-    public class EmployeeRepository : IEmployeeRepository
-    {
-        // TODO Deprecate
-        public List<Employee> GetEmployees() {
-            if(File.Exists("EmployeeDatabase.json")) {
-                return JsonSerializer.Deserialize<List<Employee>>(File.ReadAllText("EmployeeDatabase.json"))!;
-            } else {
-                return new List<Employee>();
-            }
-        }
-
-        // TODO Deprecate
-        public void PostEmployees(List<Employee> employeeDb) {
-            string serializedDb = JsonSerializer.Serialize(employeeDb);
-            File.WriteAllText("EmployeeDatabase.json", serializedDb);
-        }
-
+    public class EmployeeRepository : IEmployeeRepository { // TODO Refactor to work with logger
         #region // Put methods... update role, pass, or email
         public Employee UpdateEmployee(int id, int roleId) {
             string conString = File.ReadAllText("../../ConString.txt");

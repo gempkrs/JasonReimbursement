@@ -27,7 +27,7 @@ public interface IEmployeeService {
     public Employee EditEmployee(int managerId, int employeeId, int roleId);
 }
 
-public class EmployeeService : IEmployeeService {
+public class EmployeeService : IEmployeeService { // TODO Refactor to work with logger
 
     private readonly IEmployeeRepository _ier;
     private IEmployeeValidationService _ievs;
@@ -53,22 +53,13 @@ public class EmployeeService : IEmployeeService {
     }
     #endregion
 
-    #region // TODO, Refactor: Edit Employee Methods
+    #region // Edit Employee methods
     public Employee EditEmployee(int id, string oldPassword, string newPassword) {
         if(!_ievs.isEmployee(id) || !_ievs.ValidPassword(newPassword) || !_ievs.isPassword(id, oldPassword)) {
             Console.WriteLine("Invalid employeeId, invalid new password, or passwords don't match.");
             return null!;
         }
-        // //tmp... update query using employee id...
-        // List<Employee> employeeDb = _ier.GetEmployees();
-        // foreach(Employee entry in employeeDb) {
-        //     if(entry.id == id && entry.password.Equals(oldPassword)) {
-        //         entry.password = newPassword;
-        //         _ier.PostEmployees(employeeDb);
-        //         return entry;
-        //     }
-        // }
-        // return null!;
+
         return _ier.UpdateEmployee(id, newPassword);
     }
 
@@ -77,16 +68,7 @@ public class EmployeeService : IEmployeeService {
             Console.WriteLine("Invalid employeeId, or invalid email");
             return null!;
         }
-        // //tmp... update query using employee id...
-        // List<Employee> employeeDb = _ier.GetEmployees();
-        // foreach(Employee entry in employeeDb) {
-        //     if(entry.id == id) {
-        //         entry.email = email;
-        //         _ier.PostEmployees(employeeDb);
-        //         return entry;
-        //     }
-        // }
-        // return null!;
+
         return _ier.UpdateEmployee(id, email);
     }
     public Employee EditEmployee(int managerId, int employeeId, int roleId) {

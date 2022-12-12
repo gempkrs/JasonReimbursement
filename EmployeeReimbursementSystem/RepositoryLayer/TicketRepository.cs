@@ -23,7 +23,7 @@ public interface ITicketRepository {
     List<ReimburseTicket> GetPending(int managerId);
 }
 
-public class TicketRepository : ITicketRepository {
+public class TicketRepository : ITicketRepository { // TODO Refactor to work with logger
     public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -47,7 +47,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId) {
+    public ReimburseTicket PostTicket(string guid, string r, int a, string d, int eId) { // TODO create ticket with datetime
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
             string insertTicketQuery = "INSERT INTO Ticket (TicketId, Reason, Amount, Description, StatusId, EmployeeId) VALUES (@guid, @r, @a, @d, 0, @eId);";
@@ -74,7 +74,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public ReimburseTicket GetTicket(string ticketId) {
+    public ReimburseTicket GetTicket(string ticketId) { // TODO return ticket with datetime
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
             string queryTicketById = "SELECT * FROM Ticket WHERE TicketId = @ticketId;";
@@ -104,7 +104,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public List<ReimburseTicket> GetTickets(int employeeId) {
+    public List<ReimburseTicket> GetTickets(int employeeId) { // TODO return ticket with datetime
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -138,7 +138,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public List<ReimburseTicket> GetTickets(int employeeId, int statusId) {
+    public List<ReimburseTicket> GetTickets(int employeeId, int statusId) { // TODO return ticket with datetime
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
@@ -175,7 +175,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public List<ReimburseTicket> GetPending(int managerId) {
+    public List<ReimburseTicket> GetPending(int managerId) { // TODO Refactor to return a queue, ordered by the time the tickets were submitted
                 string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {

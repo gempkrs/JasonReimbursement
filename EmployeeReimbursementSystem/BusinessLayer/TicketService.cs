@@ -12,7 +12,7 @@ using RepositoryLayer;
 
 namespace BusinessLayer;
 
-public interface ITicketService {
+public interface ITicketService { 
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
     public List<ReimburseTicket> GetPendingTickets(int empId);
     public ReimburseTicket ApproveTicket(int empId, string tickId);
@@ -21,7 +21,7 @@ public interface ITicketService {
     public List<ReimburseTicket> GetEmployeeTickets(int empId, int status);
 }
 
-public class TicketService : ITicketService {
+public class TicketService : ITicketService { // TODO Refactor to work with logger
     // Dependency Injection
     private readonly ITicketRepository _itr;
     private readonly IEmployeeRepository _ier;
@@ -34,7 +34,7 @@ public class TicketService : ITicketService {
         this._itvs = new TicketValidationService(this._itr);
     }
     
-    public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) {
+    public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) { // TODO refactor to create ticket with datetime
         if(!_ievs.isEmployee(empId) || !_itvs.ValidTicket(reason, amount, desc)) {
             Console.WriteLine("Invalid employeeId, or your ticket was invalid.");
             return null!;
@@ -42,7 +42,7 @@ public class TicketService : ITicketService {
         return _itr.PostTicket(Guid.NewGuid().ToString(), reason, amount, desc, empId);
     }
 
-    public List<ReimburseTicket> GetPendingTickets(int managerId) {
+    public List<ReimburseTicket> GetPendingTickets(int managerId) { // TODO Refactor to return a queue, ordered by the time the tickets were submitted
         if(!_ievs.isManager(managerId)) {
             Console.WriteLine("Employee does not exist or have the righ permissions");
             return null!;
