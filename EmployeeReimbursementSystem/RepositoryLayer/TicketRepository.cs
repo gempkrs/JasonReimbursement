@@ -119,7 +119,7 @@ public class TicketRepository : ITicketRepository {
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
-            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId;";
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId ORDER BY RequestDate;";
             SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
             command.Parameters.AddWithValue("@employeeId", employeeId);
 
@@ -158,7 +158,7 @@ public class TicketRepository : ITicketRepository {
         string conString = File.ReadAllText("../../ConString.txt");
         List<ReimburseTicket> employeeTickets = new List<ReimburseTicket>();
         using(SqlConnection connection = new SqlConnection(conString)) {
-            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId AND StatusId = @statusId;";
+            string queryAllEmployeeTickets = "SELECT * FROM Ticket WHERE EmployeeId = @employeeId AND StatusId = @statusId ORDER BY RequestDate;";
             SqlCommand command = new SqlCommand(queryAllEmployeeTickets, connection);
             command.Parameters.AddWithValue("@employeeId", employeeId);
             command.Parameters.AddWithValue("@statusId", statusId);
