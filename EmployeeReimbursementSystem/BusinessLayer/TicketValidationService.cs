@@ -20,7 +20,7 @@ public interface ITicketValidationService {
     public bool ValidStatusChange(int managerId, string ticketId);
 }
 
-public class TicketValidationService : ITicketValidationService {
+public class TicketValidationService : ITicketValidationService { // TODO Refactor to work with logger
     private readonly ITicketRepository _itr;
     public TicketValidationService(ITicketRepository itr) => this._itr = itr;
     #region // Ticket Input Validation
@@ -30,8 +30,6 @@ public class TicketValidationService : ITicketValidationService {
     public bool ValidAmount(int amount) => (amount > 0 && amount < 10000);
     #endregion
 
-    // TODO? Might not need this anymore.
-    // TODO Make this work with SQL
     public bool isTicket(string ticketId) {
         if(_itr.GetTicket(ticketId) is null) return false;
         else return true;

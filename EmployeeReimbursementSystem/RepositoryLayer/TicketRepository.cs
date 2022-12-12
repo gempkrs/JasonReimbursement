@@ -23,7 +23,7 @@ public interface ITicketRepository {
     List<ReimburseTicket> GetPending(int managerId);
 }
 
-public class TicketRepository : ITicketRepository {
+public class TicketRepository : ITicketRepository { // TODO Refactor to work with logger
     public ReimburseTicket UpdateTicket(string ticketId, int statusId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {

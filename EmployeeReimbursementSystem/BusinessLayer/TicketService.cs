@@ -12,7 +12,7 @@ using RepositoryLayer;
 
 namespace BusinessLayer;
 
-public interface ITicketService {
+public interface ITicketService { 
     public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
     public List<ReimburseTicket> GetPendingTickets(int empId);
     public ReimburseTicket ApproveTicket(int empId, string tickId);
@@ -21,7 +21,7 @@ public interface ITicketService {
     public List<ReimburseTicket> GetEmployeeTickets(int empId, int status);
 }
 
-public class TicketService : ITicketService {
+public class TicketService : ITicketService { // TODO Refactor to work with logger
     // Dependency Injection
     private readonly ITicketRepository _itr;
     private readonly IEmployeeRepository _ier;

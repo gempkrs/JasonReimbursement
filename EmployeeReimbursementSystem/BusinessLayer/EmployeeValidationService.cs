@@ -21,13 +21,12 @@ namespace BusinessLayer
         public bool ValidRole(int roleId);
         public bool ValidRegistration(string email, string pass);
         public bool ValidRegistration(string email, string pass, int roleId);
-        // TODO?, IMPLEMENT: public bool EmailExists(string email);
         public bool isEmployee(int id);
         public bool isManager(int id);
         public bool isPassword(int id, string oldPass);
     }
 
-    public class EmployeeValidationService : IEmployeeValidationService {
+    public class EmployeeValidationService : IEmployeeValidationService { // TODO Refactor to work with logger
         private readonly IEmployeeRepository _ier;
         public EmployeeValidationService(IEmployeeRepository ier) => this._ier = ier;
 
@@ -52,14 +51,12 @@ namespace BusinessLayer
         public bool ValidRole(int roleId) => (roleId >= 0 && roleId <= 1);
         #endregion
 
-        public bool isEmployee(int id) {
-            // TODO Change to use SQL, if the query returns 0 records, employee doesn't exist            
+        public bool isEmployee(int id) {    
             if(_ier.GetEmployee(id) is null) return false;
             else return true;
         }
 
         public bool isManager(int id) {
-            // TODO Change to use sql, if the query returns 0 records, employee doesn't exist or has no permissions
             Employee tmp = _ier.GetEmployee(id);
             if(tmp is null || tmp.roleID == 0) return false;
             else return true;
