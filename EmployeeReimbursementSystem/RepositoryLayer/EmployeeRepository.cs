@@ -17,7 +17,6 @@ namespace RepositoryLayer
     public interface IEmployeeRepository {
         Employee UpdateEmployee(int id, int roleId);
         Employee UpdateEmployee(int id, string info);
-        //Employee PostEmployee(string email, string password);
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
         Employee GetEmployee(int id);
@@ -41,21 +40,7 @@ namespace RepositoryLayer
                 command.Parameters.AddWithValue("@RoleId", roleId);
                 command.Parameters.AddWithValue("@Id", id); 
 
-                try {
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if(rowsAffected == 1) {
-                        _loggerER.LogEmployeePut(true, roleId);
-                        return GetEmployee(id);
-                    } else {    
-                        _loggerER.LogEmployeePut(false, roleId);
-                        return null!;
-                    } 
-                } catch(Exception e) {
-                    _loggerER.LogEmployeePut(false, roleId);
-                    Console.WriteLine(e.Message);
-                    return null!;
-                }
+                return ExecuteUpdate(connection, command, id, "UpdateRole");
             } 
         }
 
@@ -74,21 +59,7 @@ namespace RepositoryLayer
                 command.Parameters.AddWithValue("@info", info); 
                 command.Parameters.AddWithValue("@Id", id);
 
-                try {
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if(rowsAffected == 1) {
-                        _loggerER.LogEmployeePut(true, info);
-                        return GetEmployee(id);
-                    } else {
-                        _loggerER.LogEmployeePut(false, info);
-                        return null!;
-                    }
-                } catch(Exception e) {
-                    _loggerER.LogEmployeePut(false, info);
-                    Console.WriteLine(e.Message);
-                    return null!;
-                }
+                return ExecuteUpdate(connection, command, id, info);
             }
         }
         #endregion
@@ -218,5 +189,24 @@ namespace RepositoryLayer
             }
         }
         #endregion
+
+        private Employee ExecuteUpdate(SqlConnection con, SqlCommand comm, int id, object logInfo) {
+            // Steps for updating
+            try { 
+                con.Open();
+                int rowsAffected = comm.ExecuteNonQuery();
+                if(rowsAffected == 1) {
+                    _loggerER.LogEmployeePut(true, logInfo);
+                    return GetEmployee(id);
+                } else {    
+                    _loggerER.LogEmployeePut(false, logInfo);
+                    return null!;
+                } 
+            } catch(Exception e) {
+                _loggerER.LogEmployeePut(false, logInfo);
+                Console.WriteLine(e.Message);
+                return null!;
+            }
+        }
     }
 }
