@@ -17,7 +17,7 @@ namespace RepositoryLayer
     public interface IEmployeeRepository {
         Employee UpdateEmployee(int id, int roleId);
         Employee UpdateEmployee(int id, string info);
-        Employee PostEmployee(string email, string password);
+        //Employee PostEmployee(string email, string password);
         Employee PostEmployee(string email, string password, int roleId);
         Employee GetEmployee(string email);
         Employee GetEmployee(int id);
@@ -27,12 +27,15 @@ namespace RepositoryLayer
     public class EmployeeRepository : IEmployeeRepository {
         // Giving this class a logger
         private readonly ILoggerEmployeeRepository _loggerER;
-        public EmployeeRepository(ILoggerEmployeeRepository logger) => this._loggerER = logger;
+        private string _conString;
+        public EmployeeRepository(ILoggerEmployeeRepository logger) {
+            this._loggerER = logger;
+            this._conString = File.ReadAllText("../../ConString.txt");
+        } 
 
         #region // Put methods... update role, pass, or email
         public Employee UpdateEmployee(int id, int roleId) {
-            string conString = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conString)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string updateEmployeeQuery = "UPDATE Employee SET RoleId = @RoleId WHERE EmployeeId = @Id;";
                 SqlCommand command = new SqlCommand(updateEmployeeQuery, connection);
                 command.Parameters.AddWithValue("@RoleId", roleId);
@@ -57,9 +60,8 @@ namespace RepositoryLayer
         }
 
         public Employee UpdateEmployee(int id, string info) {
-            string conString = File.ReadAllText("../../ConString.txt");
             string regex = @"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$";
-            using(SqlConnection connection = new SqlConnection(conString)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string updateEmployeeQuery;
                 if(System.Text.RegularExpressions.Regex.Match(info, regex).Success) {
                     // info is an email
@@ -91,36 +93,9 @@ namespace RepositoryLayer
         }
         #endregion
 
-        #region // Post methods... create an employee with or without role
-        public Employee PostEmployee(string email, string password) {
-            string conStirng = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conStirng)) {
-                string insertEmployeeQuery = "INSERT INTO Employee (Email, Password, RoleId) VALUES (@email, @password, @RoleId);";
-                SqlCommand command = new SqlCommand(insertEmployeeQuery, connection);
-                command.Parameters.AddWithValue("@email", email);
-                command.Parameters.AddWithValue("@password", password);
-                command.Parameters.AddWithValue("@RoleId", 0);
-                try {
-                    connection.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if(rowsAffected == 1) {
-                        _loggerER.LogEmployeePost(true);
-                        return GetEmployee(email);
-                    } else {
-                        _loggerER.LogEmployeePost(false);
-                        return null!;
-                    }
-                } catch (Exception e) {
-                    _loggerER.LogEmployeePost(false);
-                    Console.WriteLine(e.Message);
-                    return null!;
-                }
-            }
-        }
-
+        #region // Post method... create an employee/manager
         public Employee PostEmployee(string email, string password, int roleId) {
-            string conStirng = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conStirng)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string insertEmployeeQuery = "INSERT INTO Employee (Email, Password, RoleId) VALUES (@email, @password, @RoleId);";
                 SqlCommand command = new SqlCommand(insertEmployeeQuery, connection);
                 command.Parameters.AddWithValue("@email", email);
@@ -147,8 +122,7 @@ namespace RepositoryLayer
 
         #region  // Get Methods... retrieve unique employee by email, id, or email & password
         public Employee GetEmployee(string email) {
-            string conString = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conString)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email";
                 SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
                 command.Parameters.AddWithValue("@Email", email);
@@ -180,8 +154,7 @@ namespace RepositoryLayer
         }
 
         public Employee GetEmployee(int id) {
-            string conString = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conString)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string queryEmployeeById = "SELECT * FROM Employee WHERE EmployeeId = @id";
                 SqlCommand command = new SqlCommand(queryEmployeeById, connection);
                 command.Parameters.AddWithValue("@id", id);
@@ -213,8 +186,7 @@ namespace RepositoryLayer
         }
 
         public Employee LoginEmployee(string email, string password) {
-            string conString = File.ReadAllText("../../ConString.txt");
-            using(SqlConnection connection = new SqlConnection(conString)) {
+            using(SqlConnection connection = new SqlConnection(_conString)) {
                 string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email AND Password = @password";
                 SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
                 command.Parameters.AddWithValue("@Email", email);
