@@ -8,9 +8,7 @@ using ModelLayer;
 
 /**
  * TODO, Reduce the number of repeated lines of code and increase readability
- * - Identify where code keeps getting reused, seperate functionality into 
- *   seperate methods.
- * - Add in loggers.
+ * - Add in updated loggers.
  */
 namespace RepositoryLayer
 {
@@ -24,7 +22,7 @@ namespace RepositoryLayer
     }
 
     public class EmployeeRepository : IEmployeeRepository {
-        // Giving this class a logger
+        // Injecting a logger
         private readonly ILoggerEmployeeRepository _loggerER;
         private string _conString;
         public EmployeeRepository(ILoggerEmployeeRepository logger) {
@@ -32,7 +30,7 @@ namespace RepositoryLayer
             this._conString = File.ReadAllText("../../ConString.txt");
         } 
 
-        #region // Put methods... update role, pass, or email
+        // Update an employee's role, email, or password
         public Employee UpdateEmployee(int id, int roleId) {
             using(SqlConnection connection = new SqlConnection(_conString)) {
                 string updateEmployeeQuery = "UPDATE Employee SET RoleId = @RoleId WHERE EmployeeId = @Id;";
@@ -62,9 +60,8 @@ namespace RepositoryLayer
                 return ExecuteUpdate(connection, command, id, info);
             }
         }
-        #endregion
 
-        #region // Post method... create an employee/manager
+        // Add an employee to the system
         public Employee PostEmployee(string email, string password, int roleId) {
             using(SqlConnection connection = new SqlConnection(_conString)) {
                 string insertEmployeeQuery = "INSERT INTO Employee (Email, Password, RoleId) VALUES (@email, @password, @RoleId);";
@@ -89,38 +86,14 @@ namespace RepositoryLayer
                 }
             }
         }
-        #endregion
 
-        #region  // Get Methods... retrieve unique employee by email, id, or email & password
+        // Get Methods... retrieve unique employee by email, id, or email & password
         public Employee GetEmployee(string email) {
             using(SqlConnection connection = new SqlConnection(_conString)) {
                 string queryEmployeeByEmail = "SELECT * FROM Employee WHERE Email = @email";
                 SqlCommand command = new SqlCommand(queryEmployeeByEmail, connection);
                 command.Parameters.AddWithValue("@Email", email);
-                try {
-                    connection.Open();
-                    
-                    using(SqlDataReader reader = command.ExecuteReader()) {
-                        if(!reader.HasRows) {
-                            _loggerER.LogEmployeeGet(false, email);
-                            return null!;
-                        } 
-                        else {
-                            reader.Read();
-                            _loggerER.LogEmployeeGet(true, email);
-                            return new Employee(
-                                (int)reader[0], 
-                                (string)reader[1], 
-                                (string)reader[2], 
-                                (int)reader[3]
-                            );
-                        }
-                    }
-                } catch(Exception e) {
-                    _loggerER.LogEmployeeGet(false, email);
-                    Console.WriteLine(e.Message);
-                    return null!;
-                }
+                return ExecuteGet(connection, command, email);
             }
         }
 
@@ -129,30 +102,7 @@ namespace RepositoryLayer
                 string queryEmployeeById = "SELECT * FROM Employee WHERE EmployeeId = @id";
                 SqlCommand command = new SqlCommand(queryEmployeeById, connection);
                 command.Parameters.AddWithValue("@id", id);
-                try {
-                    connection.Open();
-                    
-                    using(SqlDataReader reader = command.ExecuteReader()) {
-                        if(!reader.HasRows) {
-                            _loggerER.LogEmployeeGet(false, id);
-                            return null!;
-                        } 
-                        else {
-                            reader.Read();
-                            _loggerER.LogEmployeeGet(true, id);
-                            return new Employee(
-                                (int)reader[0], 
-                                (string)reader[1], 
-                                (string)reader[2], 
-                                (int)reader[3]
-                            );
-                        }
-                    }
-                } catch(Exception e) {
-                    _loggerER.LogEmployeeGet(false, id);
-                    Console.WriteLine(e.Message);
-                    return null!;
-                }
+                return ExecuteGet(connection, command, id);
             }
         }
 
@@ -173,12 +123,7 @@ namespace RepositoryLayer
                         else {
                             reader.Read();
                             _loggerER.LogLoginRequest(true);
-                            return new Employee(
-                                (int)reader[0], 
-                                (string)reader[1], 
-                                (string)reader[2], 
-                                (int)reader[3]
-                            );
+                            return GetEmployee(email);
                         }
                     }
                 } catch(Exception e) {
@@ -188,10 +133,10 @@ namespace RepositoryLayer
                 }
             }
         }
-        #endregion
-
+        
+        // Helper methods
         private Employee ExecuteUpdate(SqlConnection con, SqlCommand comm, int id, object logInfo) {
-            // Steps for updating
+            // Steps for updating an employee
             try { 
                 con.Open();
                 int rowsAffected = comm.ExecuteNonQuery();
@@ -204,6 +149,34 @@ namespace RepositoryLayer
                 } 
             } catch(Exception e) {
                 _loggerER.LogEmployeePut(false, logInfo);
+                Console.WriteLine(e.Message);
+                return null!;
+            }
+        }
+
+        private Employee ExecuteGet(SqlConnection con, SqlCommand comm, object logInfo) {
+            // Steps for getting an employee
+            try {
+                con.Open();
+                
+                using(SqlDataReader reader = comm.ExecuteReader()) {
+                    if(!reader.HasRows) {
+                        _loggerER.LogEmployeeGet(false, logInfo);
+                        return null!;
+                    } 
+                    else {
+                        reader.Read();
+                        _loggerER.LogEmployeeGet(true, logInfo);
+                        return new Employee(
+                            (int)reader[0], 
+                            (string)reader[1], 
+                            (string)reader[2], 
+                            (int)reader[3]
+                        );
+                    }
+                }
+            } catch(Exception e) {
+                _loggerER.LogEmployeeGet(false, logInfo);
                 Console.WriteLine(e.Message);
                 return null!;
             }
