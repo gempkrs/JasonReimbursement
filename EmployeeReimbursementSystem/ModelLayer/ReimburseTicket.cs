@@ -15,7 +15,7 @@ public class ReimburseTicket {
     public string ?guid{get;set;}
     public int employeeID{get; set;}
     public string ?reason{get; set;}
-    public int amount{get; set;}
+    public double amount{get; set;}
     public string ?description{get; set;}
     public DateTime timeMade{get; set;}
 
@@ -23,7 +23,7 @@ public class ReimburseTicket {
     public int status{get; set;}
 
     // Constructor to be used when an employee creates a ticket
-    public ReimburseTicket(string guid, string reason, int amount, string description, int statusId, DateTime timeMade, int employeeID) {
+    public ReimburseTicket(string guid, string reason, double amount, string description, int statusId, DateTime timeMade, int employeeID) {
         this.guid = guid;
         this.reason = reason;
         this.amount = amount;
