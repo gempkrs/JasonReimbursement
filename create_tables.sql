@@ -19,7 +19,7 @@ CREATE TABLE TicketStatus (
 CREATE TABLE Ticket (
     TicketId VARCHAR(36) NOT NULL PRIMARY KEY,
     Reason NVARCHAR(25),
-    Amount FLOAT(53) NOT NULL,
+    Amount INT NOT NULL,
     Description NVARCHAR(250),
     StatusId INT NOT NULL,
 	RequestDate DATETIME,

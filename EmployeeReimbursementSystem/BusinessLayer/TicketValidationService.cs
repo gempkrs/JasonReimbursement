@@ -9,9 +9,9 @@ using RepositoryLayer;
 namespace BusinessLayer;
 public interface ITicketValidationService {
     public bool ValidReason(string reason);
-    public bool ValidAmount(double amount);
+    public bool ValidAmount(int amount);
     public bool ValidDescription(string description);
-    public bool ValidTicket(string reason, double amount, string description);
+    public bool ValidTicket(string reason, int amount, string description);
     public bool isTicket(string ticketId);
     public bool ValidStatusChange(int managerId, string ticketId);
 }
@@ -20,10 +20,10 @@ public class TicketValidationService : ITicketValidationService {
     private readonly ITicketRepository _itr;
     public TicketValidationService(ITicketRepository itr) => this._itr = itr;
     #region // Ticket Input Validation
-    public bool ValidTicket(string reason, double amount, string desc) => ValidReason(reason) && ValidAmount(amount) && ValidDescription(desc);
+    public bool ValidTicket(string reason, int amount, string desc) => ValidReason(reason) && ValidAmount(amount) && ValidDescription(desc);
     public bool ValidReason(string reason) => reason.Length > 1;
     public bool ValidDescription(string description) => description.Length > 1;
-    public bool ValidAmount(double amount) => (amount > 0 && amount < 10000);
+    public bool ValidAmount(int amount) => (amount > 0 && amount < 10000);
     #endregion
 
     public bool isTicket(string ticketId) {

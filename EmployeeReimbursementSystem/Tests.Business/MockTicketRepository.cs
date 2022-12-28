@@ -68,7 +68,7 @@ namespace Tests.Business
             throw new NotImplementedException();
         }
 
-        public ReimburseTicket PostTicket(string guid, string r, double a, string d, DateTime t, int eId)
+        public ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId)
         {
             throw new NotImplementedException();
         }

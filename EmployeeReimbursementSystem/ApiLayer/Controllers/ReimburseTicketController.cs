@@ -18,7 +18,7 @@ namespace ApiLayer.Controllers
         public ReimburseTicketController(ITicketService its) => this._its = its;
 
         [HttpPost("ReimbursementTicket")]
-        public ActionResult<ReimburseTicket> ReimbursementTicket(int empId, string reason, double amount, string description) {
+        public ActionResult<ReimburseTicket> ReimbursementTicket(int empId, string reason, int amount, string description) {
             ReimburseTicket ticket = _its.AddTicket(empId, reason, amount, description);
             return Created("path/", ticket);
         }
