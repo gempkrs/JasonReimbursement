@@ -9,7 +9,7 @@ using RepositoryLayer;
 namespace BusinessLayer;
 
 public interface ITicketService { 
-    public ReimburseTicket AddTicket(int empId, string reason, int amount, string description);
+    public ReimburseTicket AddTicket(int empId, string reason, double amount, string description);
     public Queue<ReimburseTicket> GetPendingTickets(int managerId);
     public ReimburseTicket ApproveTicket(int managerId, string tickId);
     public ReimburseTicket DenyTicket(int managerId, string ticketId);
@@ -30,7 +30,7 @@ public class TicketService : ITicketService {
         this._itvs = new TicketValidationService(this._itr);
     }
     
-    public ReimburseTicket AddTicket(int empId, string reason, int amount, string desc) {
+    public ReimburseTicket AddTicket(int empId, string reason, double amount, string desc) {
         if(!_ievs.isEmployee(empId) || !_itvs.ValidTicket(reason, amount, desc)) {
             Console.WriteLine("Invalid employeeId, or your ticket was invalid.");
             return null!;

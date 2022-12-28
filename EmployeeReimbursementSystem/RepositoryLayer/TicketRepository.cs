@@ -9,7 +9,7 @@ using ModelLayer;
 
 namespace RepositoryLayer;
 public interface ITicketRepository {
-    ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId);
+    ReimburseTicket PostTicket(string guid, string r, double a, string d, DateTime t, int eId);
     ReimburseTicket GetTicket(string ticketId);
     ReimburseTicket UpdateTicket(string ticketId, int statusId);
     List<ReimburseTicket> GetTickets(int employeeId);
@@ -48,7 +48,7 @@ public class TicketRepository : ITicketRepository {
         }
     }
 
-    public ReimburseTicket PostTicket(string guid, string r, int a, string d, DateTime t, int eId) {
+    public ReimburseTicket PostTicket(string guid, string r, double a, string d, DateTime t, int eId) {
         string conString = File.ReadAllText("../../ConString.txt");
         using(SqlConnection connection = new SqlConnection(conString)) {
             string insertTicketQuery = "INSERT INTO Ticket (TicketId, Reason, Amount, Description, StatusId, RequestDate, EmployeeId) VALUES (@guid, @r, @a, @d, 0, @t, @eId);";
@@ -98,7 +98,7 @@ public class TicketRepository : ITicketRepository {
                         return new ReimburseTicket(
                             (string) reader[0],
                             (string) reader[1],
-                            (int) reader[2],
+                            (double) reader[2],
                             (string) reader[3],
                             (int) reader[4],
                             (DateTime) reader[5],
@@ -134,7 +134,7 @@ public class TicketRepository : ITicketRepository {
                         ReimburseTicket newTicket = new ReimburseTicket(
                             (string) reader[0],
                             (string) reader[1],
-                            (int) reader[2],
+                            (double) reader[2],
                             (string) reader[3],
                             (int) reader[4],
                             (DateTime) reader[5],
@@ -175,7 +175,7 @@ public class TicketRepository : ITicketRepository {
                             ReimburseTicket newTicket = new ReimburseTicket(
                                 (string) reader[0],
                                 (string) reader[1],
-                                (int) reader[2],
+                                (double) reader[2],
                                 (string) reader[3],
                                 (int) reader[4],
                                 (DateTime) reader[5],
@@ -216,7 +216,7 @@ public class TicketRepository : ITicketRepository {
                             ReimburseTicket newTicket = new ReimburseTicket(
                                 (string) reader[0],
                                 (string) reader[1],
-                                (int) reader[2],
+                                (double) reader[2],
                                 (string) reader[3],
                                 (int) reader[4],
                                 (DateTime) reader[5],
